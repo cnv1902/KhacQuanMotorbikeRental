@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>{% block title %}Admin{% endblock %}</title>
+
+    <!-- Favicon -->
+    <link rel="shortcut icon" href="{{ url_for('static', filename='images/favicon.ico') }}" />
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/backend-plugin.min.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/backend.css') }}">
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='vendor/@fortawesome/fontawesome-free/css/all.min.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='vendor/line-awesome/dist/line-awesome/css/line-awesome.min.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='vendor/remixicon/fonts/remixicon.css') }}">
+
+    {% block head %}{% endblock %}
+  </head>
+  <body class="">
+    {% block body_start %}{% endblock %}
+    {% block content %}{% endblock %}
+
+    <!-- Scripts -->
+    <script src="{{ url_for('static', filename='js/backend-bundle.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/customizer.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/chart-custom.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/doc-viewer.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+
+    {% block scripts %}{% endblock %}
+  </body>
+</html>

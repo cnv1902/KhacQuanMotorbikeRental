@@ -1,0 +1,89 @@
+1. Bảng StoreInfo – Thông tin cửa hàng
+    id	            Khóa chính (mã cửa hàng).
+    store_name	    Tên cửa hàng.
+    owner_name	    Tên chủ cửa hàng.
+    address	        Địa chỉ cửa hàng.
+    phone	        Số điện thoại cửa hàng.
+    email	        Email cửa hàng (không bắt buộc).
+    business_hours	Giờ mở cửa – đóng cửa.
+    google_map_url	Link Google Map để dẫn đường.
+    slide_url       Link đường dẫn slide.
+    description	    Giới thiệu tổng quan về cửa hàng.
+    created_at	    Ngày/giờ tạo thông tin.
+    updated_at	    Ngày/giờ cập nhật thông tin.
+
+2. Bảng Article – Bài viết / Blog
+    id	            Khóa chính.
+    title	        Tiêu đề bài viết.
+    content	        Nội dung chi tiết bài viết.
+    featured_image	Link ảnh đại diện bài viết.
+    is_published	Trạng thái công bố (đăng / nháp).
+    view_count	    Số lượt xem.
+    published_at	Ngày xuất bản.
+    created_at	    Ngày tạo.
+    updated_at	    Ngày cập nhật.
+
+3. Bảng Motorcycle – Bảng xe máy
+    id	                        Khóa chính.
+    name	                    Tên xe.
+    category_id	                Loại xe (1. Xe số, 2. Xe ga, 3. Xe côn, 4. Xe mô tô, 5. Xe điện).
+    brand	                    Hãng xe (Honda, Yamaha…).
+    engine_capacity	            Dung tích xe (110cc, 150cc…).
+    price_per_day/week/month	Giá thuê theo ngày/tuần/tháng.
+    image	                    URL ảnh xe.
+    created_at, updated_at	    Lịch sử tạo/cập nhật.
+
+4. Bảng Detail_Motorcycle - Bảng xe chi tiết
+    id                          Khóa chính
+    motorcycle_id               Xe
+    license_plate	            Biển số xe (duy nhất).
+    model_year	                Năm sản xuất / đời xe.
+    description	                Mô tả chi tiết xe.
+    status                      Trạng thái sẵn sàng hoặc không sẵn sàng
+
+5. Bảng Customer – Khách thuê xe
+    id	                                Khóa chính.
+    full_name	                        Tên khách.
+    phone	                            SĐT.
+    email	                            Email (không bắt buộc).
+    date_of_birth	                    Ngày sinh.
+    hometown	                        Quê quán.
+    address	                            Địa chỉ đang ở.
+    citizen_id	                        Số CCCD.
+    citizen_id_front_image / back_image	Ảnh mặt trước/sau CCCD.
+    driver_license_number	            Số GPLX (nếu có).
+    driver_license_image	            Ảnh GPLX.
+    created_at, updated_at	            Lịch sử tạo/cập nhật.
+
+6. Bảng Rental – Đơn thuê xe
+    id	                                    Khóa chính.
+    customer_id	                            Khách hàng thuê.
+    start_date / end_date	                Thời gian thuê dự kiến.
+    actual_return_date	                    Ngày trả thực tế.
+    rental_days	                            Số ngày thuê tính toán.
+    total_amount	                        Tổng tiền thuê.
+    deposit_amount	                        Tiền cọc khách đặt.
+    paid_amount	                            Số tiền đã thanh toán.
+    status	                                Trạng thái đơn: pending / active / completed…
+    payment_method	                        Phương thức thanh toán (tiền mặt, vnpay…).
+    payment_status	                        Trạng thái thanh toán.
+    vnpay_transaction_id, vnpay_bank_code	Dữ liệu thanh toán VNPay.
+    notes	                                Ghi chú.
+    created_at, updated_at	                Lịch sử.
+7. Bảng RentalItem – Chi tiết từng xe trong đơn thuê
+    id	                                Khóa chính.
+    rental_id(Rental)	                Thuộc đơn thuê nào.
+    motorcycle_id(Detail_Motorcycle)	Xe nào được thuê.
+    quantity	                        Số lượng xe.
+    price_per_day	                    Giá thuê mỗi ngày tại thời điểm thuê.
+    sub_total	                        Thành tiền = giá * số ngày * số lượng.
+8. Bảng Payment – Giao dịch thanh toán
+    id	                                                    Khóa chính.
+    rental_id	                                            Liên kết đến đơn thuê.
+    payment_code	                                        Mã giao dịch thanh toán.
+    amount	                                                Số tiền thanh toán.
+    payment_method	                                        Phương thức thanh toán.
+    payment_status	                                        Trạng thái thanh toán.
+    vnpay_transaction_id, vnpay_bank_code, vnpay_pay_date	Thông tin từ VNPay.
+    payment_date	                                        Thời điểm thanh toán thành công.
+    created_at	                                            Ngày tạo bản ghi.

@@ -1,0 +1,91 @@
+{% extends 'admin/layout.html' %}
+
+{% block title %}Admin - Bảng điều khiển{% endblock %}
+
+{% block page_content %}
+<div class="content-page">
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-lg-12">
+        <div class="card-transparent card-block card-stretch card-height mb-3">
+          <div class="d-flex justify-content-between">                             
+            <div class="select-dropdown input-prepend input-append">
+              <div class="btn-group">
+                <div data-toggle="dropdown">
+                  <div class="dropdown-toggle search-query">My Drive<i class="las la-angle-down ml-3"></i></div><span class="search-replace"></span>
+                  <span class="caret"><!--icon--></span>
+                </div>
+                <ul class="dropdown-menu">
+                  <li><div class="item"><i class="ri-folder-add-line pr-3"></i>New Folder</div></li>
+                  <li><div class="item"><i class="ri-file-upload-line pr-3"></i>Upload Files</div></li>
+                  <li><div class="item"><i class="ri-folder-upload-line pr-3"></i>Upload Folders</div></li>
+                </ul>
+              </div>
+            </div>
+            <div class="dashboard1-dropdown d-flex align-items-center">
+              <div class="dashboard1-info">
+                <a href="#calander" class="collapsed" data-toggle="collapse" aria-expanded="false">
+                  <i class="ri-arrow-down-s-line"></i>
+                </a>
+                <ul id="calander" class="iq-dropdown collapse list-inline m-0 p-0 mt-2">
+                  <li class="mb-2">
+                    <a href="#" data-toggle="tooltip" data-placement="right" title="Calander"><i class="las la-calendar iq-arrow-left"></i></a>
+                  </li>
+                  <li class="mb-2">
+                    <a href="#" data-toggle="tooltip" data-placement="right" title="Keep"><i class="las la-lightbulb iq-arrow-left"></i></a>
+                  </li>
+                  <li>
+                    <a href="#" data-toggle="tooltip" data-placement="right" title="Tasks"><i class="las la-tasks iq-arrow-left"></i></a>
+                  </li>                                        
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-8">
+        <div class="card card-block card-stretch card-height iq-welcome" style="background: url(../assets/images/layouts/mydrive/background.png) no-repeat scroll right center; background-color: #ffffff; background-size: contain;">
+          <div class="card-body property2-content">
+            <div class="d-flex flex-wrap align-items-center">
+              <div class="col-lg-6 col-sm-6 p-0">
+                <h3 class="mb-3">Welcome {{ session.get('account_full_name', 'Admin') }}</h3>
+                <p class="mb-5">Chào mừng đến với trang quản trị hệ thống cho thuê xe máy</p>
+                <a href="{{ url_for('admin.motorcycles') }}" class="btn btn-primary">Quản lý xe <i class="las la-arrow-right ml-2"></i></a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-4">
+        <div class="card card-block card-stretch card-height">
+          <div class="card-header d-flex justify-content-between">
+            <div class="header-title">
+              <h4 class="card-title">Quick Access</h4>
+            </div>
+          </div>
+          <div class="card-body">
+            <ul class="list-inline p-0 mb-0 row align-items-center">
+              <li class="col-lg-6 col-sm-6 mb-3 mb-sm-0"> 
+                <a href="{{ url_for('admin.motorcycles') }}" class="p-2 text-center border rounded d-block">
+                  <div>
+                    <i class="las la-motorcycle" style="font-size: 2rem; color: #007bff;"></i>
+                  </div>
+                  <p class="mb-0">Quản lý xe</p>
+                </a>
+              </li>
+              <li class="col-lg-6 col-sm-6"> 
+                <a href="{{ url_for('admin.admin_index') }}" class="p-2 text-center border rounded d-block">
+                  <div>
+                    <i class="las la-chart-bar" style="font-size: 2rem; color: #28a745;"></i>
+                  </div>
+                  <p class="mb-0">Thống kê</p>
+                </a>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>                             
+    </div>
+  </div>
+</div>
+{% endblock %}
