@@ -12,10 +12,5 @@ def main():
         db_url = 'sqlite:///local_dev.db'
     models.create_tables(url=db_url)
 
-    from app import create_app
-    app = create_app()
-    app.run(debug=True)
-
-
 if __name__ == '__main__':
     main()
