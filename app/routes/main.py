@@ -37,16 +37,5 @@ def admin_index():
 
 
 @bp.route('/health')
-@bp.route('/api/health')
-@bp.route('/healthcheck')
-def health_check():
-    """
-    Endpoint kiểm tra tình trạng dịch vụ cực nhẹ.
-    Không truy vấn DB, không tạo tải.
-    Chỉ trả về trạng thái và timestamp.
-    """
-    return jsonify({
-        "status": "ok",
-        "service": "KhacQuanMotorbikeRental",
-        "timestamp": datetime.utcnow().isoformat()
-    }), 200
+def health():
+    return {"status": "ok"}
