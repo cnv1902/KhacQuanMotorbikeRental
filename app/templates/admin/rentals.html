@@ -1,0 +1,202 @@
+{% extends 'admin/layout.html' %}
+
+{% block title %}Admin - Quản lý đơn thuê{% endblock %}
+
+{% block page_content %}
+<div class="content-page">
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-sm-12">
+        <div class="card">
+          <div class="card-header d-flex justify-content-between">
+            <h4 class="card-title">Quản lý đơn thuê</h4>
+          </div>
+          <div class="card-body">
+            <!-- Filter Form -->
+            <form method="GET" action="{{ url_for('admin.rentals') }}" class="mb-4">
+              <div class="row">
+                <div class="col-md-3">
+                  <div class="form-group">
+                    <label>Trạng thái:</label>
+                    <select name="status" class="form-control">
+                      <option value="">Tất cả</option>
+                      <option value="pending" {% if status == 'pending' %}selected{% endif %}>Chờ xác nhận</option>
+                      <option value="confirmed" {% if status == 'confirmed' %}selected{% endif %}>Đã xác nhận</option>
+                      <option value="rented" {% if status == 'rented' %}selected{% endif %}>Đang thuê</option>
+                      <option value="returned" {% if status == 'returned' %}selected{% endif %}>Đã trả</option>
+                      <option value="cancelled" {% if status == 'cancelled' %}selected{% endif %}>Đã hủy</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="col-md-4">
+                  <div class="form-group">
+                    <label>Tìm kiếm:</label>
+                    <input type="text" name="search" class="form-control" placeholder="Mã đơn, tên KH, SĐT, mã giao dịch..." value="{{ search }}">
+                  </div>
+                </div>
+                <div class="col-md-2">
+                  <div class="form-group">
+                    <label>&nbsp;</label>
+                    <button type="submit" class="btn btn-primary btn-block">
+                      <i class="las la-search"></i> Tìm kiếm
+                    </button>
+                  </div>
+                </div>
+                <div class="col-md-2">
+                  <div class="form-group">
+                    <label>&nbsp;</label>
+                    <a href="{{ url_for('admin.rentals') }}" class="btn btn-secondary btn-block">
+                      <i class="las la-redo"></i> Làm mới
+                    </a>
+                  </div>
+                </div>
+              </div>
+            </form>
+
+            <!-- Rentals Table -->
+            <div class="table-responsive">
+              <table class="table table-striped table-bordered">
+                <thead>
+                  <tr>
+                    <th>Mã đơn</th>
+                    <th>Khách hàng</th>
+                    <th>SĐT</th>
+                    <th>Ngày thuê</th>
+                    <th>Số ngày</th>
+                    <th>Số lượng xe</th>
+                    <th>Tổng tiền</th>
+                    <th>Đã thanh toán</th>
+                    <th>Trạng thái</th>
+                    <th>Thanh toán</th>
+                    <th>Ngày tạo</th>
+                    <th>Hành động</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% if rentals %}
+                    {% for rental in rentals %}
+                    <tr>
+                      <td><strong>#{{ rental.id }}</strong></td>
+                      <td>{{ rental.customer.full_name if rental.customer else '-' }}</td>
+                      <td>{{ rental.customer.phone if rental.customer else '-' }}</td>
+                      <td>{{ rental.start_date.strftime('%d/%m/%Y') if rental.start_date else '-' }}</td>
+                      <td>{{ rental.rental_days or '-' }} ngày</td>
+                      <td><strong>{{ rental.quantity or '0' }} xe</strong></td>
+                      <td>{{ "{:,.0f}".format(rental.total_amount) if rental.total_amount else '0' }} VND</td>
+                      <td>{{ "{:,.0f}".format(rental.paid_amount) if rental.paid_amount else '0' }} VND</td>
+                      <td>
+                        <select class="form-control form-control-sm rental-status" data-rental-id="{{ rental.id }}" onchange="updateRentalStatus({{ rental.id }}, this.value)">
+                          <option value="pending" {% if rental.status == 'pending' %}selected{% endif %}>Chờ xác nhận</option>
+                          <option value="confirmed" {% if rental.status == 'confirmed' %}selected{% endif %}>Đã xác nhận</option>
+                          <option value="rented" {% if rental.status == 'rented' %}selected{% endif %}>Đang thuê</option>
+                          <option value="returned" {% if rental.status == 'returned' %}selected{% endif %}>Đã trả</option>
+                          <option value="cancelled" {% if rental.status == 'cancelled' %}selected{% endif %}>Đã hủy</option>
+                        </select>
+                      </td>
+                      <td>
+                        {% if rental.payment_status == 'paid' %}
+                          <span class="badge badge-success">Đã thanh toán</span>
+                        {% elif rental.payment_status == 'pending' %}
+                          <span class="badge badge-warning">Chờ thanh toán</span>
+                        {% elif rental.payment_status == 'failed' %}
+                          <span class="badge badge-danger">Thất bại</span>
+                        {% else %}
+                          <span class="badge badge-secondary">{{ rental.payment_status or '-' }}</span>
+                        {% endif %}
+                      </td>
+                      <td>{{ rental.created_at.strftime('%d/%m/%Y %H:%M') if rental.created_at else '-' }}</td>
+                      <td>
+                        <a href="{{ url_for('admin.rental_detail', rental_id=rental.id) }}" class="btn btn-sm btn-primary">
+                          <i class="las la-eye"></i> Chi tiết
+                        </a>
+                      </td>
+                    </tr>
+                    {% endfor %}
+                  {% else %}
+                    <tr>
+                      <td colspan="12" class="text-center">Không có đơn thuê nào</td>
+                    </tr>
+                  {% endif %}
+                </tbody>
+              </table>
+            </div>
+
+            <!-- Pagination -->
+            {% if total_pages > 1 %}
+            <nav aria-label="Page navigation">
+              <ul class="pagination justify-content-center">
+                {% if page > 1 %}
+                <li class="page-item">
+                  <a class="page-link" href="?page={{ page - 1 }}{% if status %}&status={{ status }}{% endif %}{% if search %}&search={{ search }}{% endif %}">Trước</a>
+                </li>
+                {% endif %}
+                
+                {% for p in range(1, total_pages + 1) %}
+                  {% if p == page %}
+                  <li class="page-item active">
+                    <span class="page-link">{{ p }}</span>
+                  </li>
+                  {% elif p <= 3 or p > total_pages - 3 or (p >= page - 1 and p <= page + 1) %}
+                  <li class="page-item">
+                    <a class="page-link" href="?page={{ p }}{% if status %}&status={{ status }}{% endif %}{% if search %}&search={{ search }}{% endif %}">{{ p }}</a>
+                  </li>
+                  {% elif p == 4 or p == total_pages - 3 %}
+                  <li class="page-item disabled">
+                    <span class="page-link">...</span>
+                  </li>
+                  {% endif %}
+                {% endfor %}
+                
+                {% if page < total_pages %}
+                <li class="page-item">
+                  <a class="page-link" href="?page={{ page + 1 }}{% if status %}&status={{ status }}{% endif %}{% if search %}&search={{ search }}{% endif %}">Sau</a>
+                </li>
+                {% endif %}
+              </ul>
+            </nav>
+            {% endif %}
+
+            <div class="mt-3">
+              <p class="text-muted">Tổng số: <strong>{{ total }}</strong> đơn thuê</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+function updateRentalStatus(rentalId, newStatus) {
+  if (!confirm('Bạn có chắc muốn cập nhật trạng thái đơn thuê #' + rentalId + '?')) {
+    // Reload page to reset select
+    location.reload();
+    return;
+  }
+  
+  fetch('{{ url_for("admin.rental_update_status", rental_id=0) }}'.replace('0', rentalId), {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ status: newStatus })
+  })
+  .then(response => response.json())
+  .then(data => {
+    if (data.success) {
+      alert('Cập nhật trạng thái thành công!');
+      location.reload();
+    } else {
+      alert('Lỗi: ' + (data.message || 'Không thể cập nhật trạng thái'));
+      location.reload();
+    }
+  })
+  .catch(error => {
+    console.error('Error:', error);
+    alert('Lỗi kết nối!');
+    location.reload();
+  });
+}
+</script>
+{% endblock %}
+

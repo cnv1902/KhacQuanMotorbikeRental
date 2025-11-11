@@ -1,0 +1,104 @@
+{% extends 'admin/layout.html' %}
+{% block page_content %}
+<style>
+    .store-info-page .card{border-radius:14px; overflow:hidden;}
+    .store-info-page .card-header{padding:1rem 1.5rem;}
+    .store-info-page .form-label, .store-info-page form label{font-weight:600; font-size:.75rem; text-transform:uppercase; letter-spacing:.5px; color:#555;}
+    .store-info-page input, .store-info-page textarea{background:#f9fbfc; border:1px solid #d9e2ec;}
+    .store-info-page input:focus, .store-info-page textarea:focus{background:#fff; border-color:#4dabf7; box-shadow:0 0 0 .2rem rgba(77,171,247,.25);}
+    .store-info-page .info-section-title{font-size:.8rem; font-weight:700; text-transform:uppercase; letter-spacing:.5px; margin:1.25rem 0 .75rem; display:flex; align-items:center; gap:.35rem;}
+    .store-info-page .info-group{background:#f6f9fc; border:1px solid #e1e7ec; border-radius:10px; padding:.65rem .85rem; margin-bottom:.6rem;}
+    .store-info-page .info-group span.label{display:block; font-size:.65rem; font-weight:600; color:#6c757d; text-transform:uppercase; letter-spacing:.5px;}
+    .store-info-page .info-group .value{font-size:.9rem; font-weight:500; color:#212529;}
+    .store-info-page .placeholder-box{border:2px dashed #b8c2cc; border-radius:12px; padding:1.2rem; text-align:center; background:#fafcff;}
+    @media (max-width: 992px){ .store-info-page .right-col{margin-top:2rem; border-top:1px solid #e1e7ec; padding-top:1.5rem;} }
+</style>
+<div class="store-info-page content-page">
+    <div class="container-fluid">
+        <div class="row justify-content-center">
+            <div class="col-xl-11">
+                <div class="card shadow-sm mb-4">
+                    <div class="card-header text-white text-center">
+                        <h4 class="mb-0"><i class="las la-store"></i> Thông tin cửa hàng</h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="row g-4">
+                            <div class="col-lg-6">
+                                <form method="POST" novalidate>
+                                    <div class="mb-3">
+                                        <label for="store_name">Tên cửa hàng</label>
+                                        <input type="text" class="form-control" id="store_name" name="store_name" value="{{ store.store_name if store else '' }}" required>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="owner_name">Tên chủ cửa hàng</label>
+                                        <input type="text" class="form-control" id="owner_name" name="owner_name" value="{{ store.owner_name if store else '' }}">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="address">Địa chỉ</label>
+                                        <input type="text" class="form-control" id="address" name="address" value="{{ store.address if store else '' }}">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="phone">Số điện thoại</label>
+                                        <input type="text" class="form-control" id="phone" name="phone" value="{{ store.phone if store else '' }}">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="email">Email</label>
+                                        <input type="email" class="form-control" id="email" name="email" value="{{ store.email if store else '' }}">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="business_hours">Giờ mở cửa – đóng cửa</label>
+                                        <input type="text" class="form-control" id="business_hours" name="business_hours" value="{{ store.business_hours if store else '' }}">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="google_map_url">Link Google Map</label>
+                                        <input type="text" class="form-control" id="google_map_url" name="google_map_url" value="{{ store.google_map_url if store else '' }}">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="slide_url">Link slide</label>
+                                        <input type="text" class="form-control" id="slide_url" name="slide_url" value="{{ store.slide_url if store else '' }}">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="description">Giới thiệu cửa hàng</label>
+                                        <textarea class="form-control" id="description" name="description" rows="4">{{ store.description if store else '' }}</textarea>
+                                    </div>
+                                    <div class="d-grid">
+                                        <button type="submit" class="btn btn-success"><i class="las la-save"></i> Lưu cập nhật</button>
+                                    </div>
+                                </form>
+                            </div>
+                            <div class="col-lg-6 right-col">
+                                {% if store %}
+                                    <div class="info-section">
+                                        <div class="info-section-title"><i class="las la-info-circle"></i> Tổng quan</div>
+                                        <div class="info-group"><span class="label">Tên cửa hàng</span><div class="value">{{ store.store_name }}</div></div>
+                                        <div class="info-group"><span class="label">Chủ cửa hàng</span><div class="value">{{ store.owner_name or '—' }}</div></div>
+                                        <div class="info-group"><span class="label">Địa chỉ</span><div class="value">{{ store.address or '—' }}</div></div>
+                                        <div class="info-group"><span class="label">Số điện thoại</span><div class="value">{{ store.phone or '—' }}</div></div>
+                                        <div class="info-group"><span class="label">Email</span><div class="value">{{ store.email or '—' }}</div></div>
+                                        <div class="info-group"><span class="label">Giờ mở cửa</span><div class="value">{{ store.business_hours or '—' }}</div></div>
+                                        <div class="info-section-title"><i class="las la-link"></i> Liên kết</div>
+                                            <div class="info-group"><span class="label">Google Map</span><div class="value">{% if store.google_map_url %}
+                                                <iframe src="{{ store.google_map_url }}" width="100%" height="220" style="border:0; border-radius:8px;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+                                            {% else %}—{% endif %}</div></div>
+                                        <div class="info-group"><span class="label">Slide</span><div class="value">{% if store.slide_url %}<a href="{{ store.slide_url }}" target="_blank">Xem slide</a>{% else %}—{% endif %}</div></div>
+                                        <div class="info-section-title"><i class="las la-clock"></i> Thời gian</div>
+                                        <div class="info-group"><span class="label">Ngày tạo</span><div class="value">{{ store.created_at }}</div></div>
+                                        <div class="info-group"><span class="label">Ngày cập nhật</span><div class="value">{{ store.updated_at }}</div></div>
+                                        <div class="info-section-title"><i class="las la-paragraph"></i> Giới thiệu</div>
+                                        <div class="info-group"><div class="value">{{ store.description or 'Chưa có mô tả.' }}</div></div>
+                                    </div>
+                                {% else %}
+                                    <div class="placeholder-box">
+                                        <i class="las la-store" style="font-size:40px; opacity:.4"></i>
+                                        <p class="mt-3 mb-0">Chưa có thông tin cửa hàng. Vui lòng nhập và lưu ở biểu mẫu bên cạnh.</p>
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,243 @@
+{% extends 'admin/layout.html' %}
+
+{% block title %}Admin - Quản lý giao dịch{% endblock %}
+
+{% block page_content %}
+<div class="content-page">
+  <div class="container-fluid">
+    <div class="row">
+      <!-- Statistics Cards -->
+      <div class="col-lg-3 col-md-6">
+        <div class="card card-block card-stretch card-height">
+          <div class="card-body">
+            <div class="d-flex align-items-center mb-4 card-total-sale">
+              <div class="icon iq-icon-box-2 bg-info-light">
+                <i class="las la-money-bill-wave text-info"></i>
+              </div>
+              <div>
+                <h5 class="mb-0">Tổng giao dịch</h5>
+                <p class="mb-0">{{ stats.total }}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-3 col-md-6">
+        <div class="card card-block card-stretch card-height">
+          <div class="card-body">
+            <div class="d-flex align-items-center mb-4 card-total-sale">
+              <div class="icon iq-icon-box-2 bg-success-light">
+                <i class="las la-check-circle text-success"></i>
+              </div>
+              <div>
+                <h5 class="mb-0">Đã thanh toán</h5>
+                <p class="mb-0">{{ stats.paid }}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-3 col-md-6">
+        <div class="card card-block card-stretch card-height">
+          <div class="card-body">
+            <div class="d-flex align-items-center mb-4 card-total-sale">
+              <div class="icon iq-icon-box-2 bg-warning-light">
+                <i class="las la-clock text-warning"></i>
+              </div>
+              <div>
+                <h5 class="mb-0">Chờ thanh toán</h5>
+                <p class="mb-0">{{ stats.pending }}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-3 col-md-6">
+        <div class="card card-block card-stretch card-height">
+          <div class="card-body">
+            <div class="d-flex align-items-center mb-4 card-total-sale">
+              <div class="icon iq-icon-box-2 bg-danger-light">
+                <i class="las la-times-circle text-danger"></i>
+              </div>
+              <div>
+                <h5 class="mb-0">Thất bại</h5>
+                <p class="mb-0">{{ stats.failed }}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-lg-12">
+        <div class="card card-block card-stretch card-height">
+          <div class="card-body">
+            <h5 class="mb-3">Tổng doanh thu: <strong class="text-success">{{ "{:,.0f}".format(stats.total_amount) }} VND</strong></h5>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-sm-12">
+        <div class="card">
+          <div class="card-header d-flex justify-content-between">
+            <h4 class="card-title">Quản lý giao dịch thanh toán</h4>
+          </div>
+          <div class="card-body">
+            <!-- Filter Form -->
+            <form method="GET" action="{{ url_for('admin.payments') }}" class="mb-4">
+              <div class="row">
+                <div class="col-md-2">
+                  <div class="form-group">
+                    <label>Trạng thái:</label>
+                    <select name="status" class="form-control">
+                      <option value="">Tất cả</option>
+                      <option value="paid" {% if status == 'paid' %}selected{% endif %}>Đã thanh toán</option>
+                      <option value="pending" {% if status == 'pending' %}selected{% endif %}>Chờ thanh toán</option>
+                      <option value="failed" {% if status == 'failed' %}selected{% endif %}>Thất bại</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="col-md-2">
+                  <div class="form-group">
+                    <label>Phương thức:</label>
+                    <select name="method" class="form-control">
+                      <option value="">Tất cả</option>
+                      <option value="vnpay" {% if method == 'vnpay' %}selected{% endif %}>VNPay</option>
+                      <option value="cash" {% if method == 'cash' %}selected{% endif %}>Tiền mặt</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="col-md-4">
+                  <div class="form-group">
+                    <label>Tìm kiếm:</label>
+                    <input type="text" name="search" class="form-control" placeholder="Mã giao dịch, mã đơn..." value="{{ search }}">
+                  </div>
+                </div>
+                <div class="col-md-2">
+                  <div class="form-group">
+                    <label>&nbsp;</label>
+                    <button type="submit" class="btn btn-primary btn-block">
+                      <i class="las la-search"></i> Tìm kiếm
+                    </button>
+                  </div>
+                </div>
+                <div class="col-md-2">
+                  <div class="form-group">
+                    <label>&nbsp;</label>
+                    <a href="{{ url_for('admin.payments') }}" class="btn btn-secondary btn-block">
+                      <i class="las la-redo"></i> Làm mới
+                    </a>
+                  </div>
+                </div>
+              </div>
+            </form>
+
+            <!-- Payments Table -->
+            <div class="table-responsive">
+              <table class="table table-striped table-bordered">
+                <thead>
+                  <tr>
+                    <th>ID</th>
+                    <th>Mã giao dịch</th>
+                    <th>Mã đơn thuê</th>
+                    <th>Số tiền</th>
+                    <th>Phương thức</th>
+                    <th>Trạng thái</th>
+                    <th>Mã VNPay</th>
+                    <th>Ngày thanh toán</th>
+                    <th>Hành động</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% if payments %}
+                    {% for payment in payments %}
+                    <tr>
+                      <td>{{ payment.id }}</td>
+                      <td><strong>{{ payment.payment_code or '-' }}</strong></td>
+                      <td>
+                        {% if payment.rental %}
+                          <a href="{{ url_for('admin.rental_detail', rental_id=payment.rental.id) }}">#{{ payment.rental.id }}</a>
+                        {% else %}
+                          -
+                        {% endif %}
+                      </td>
+                      <td><strong>{{ "{:,.0f}".format(payment.amount) if payment.amount else '0' }} VND</strong></td>
+                      <td>{{ payment.payment_method or '-' }}</td>
+                      <td>
+                        {% if payment.payment_status == 'paid' %}
+                          <span class="badge badge-success">Đã thanh toán</span>
+                        {% elif payment.payment_status == 'pending' %}
+                          <span class="badge badge-warning">Chờ thanh toán</span>
+                        {% elif payment.payment_status == 'failed' %}
+                          <span class="badge badge-danger">Thất bại</span>
+                        {% else %}
+                          <span class="badge badge-secondary">{{ payment.payment_status or '-' }}</span>
+                        {% endif %}
+                      </td>
+                      <td>{{ payment.vnpay_transaction_id or '-' }}</td>
+                      <td>{{ payment.payment_date.strftime('%d/%m/%Y %H:%M') if payment.payment_date else '-' }}</td>
+                      <td>
+                        <a href="{{ url_for('admin.payment_detail', payment_id=payment.id) }}" class="btn btn-sm btn-primary">
+                          <i class="las la-eye"></i> Chi tiết
+                        </a>
+                      </td>
+                    </tr>
+                    {% endfor %}
+                  {% else %}
+                    <tr>
+                      <td colspan="10" class="text-center">Không có giao dịch nào</td>
+                    </tr>
+                  {% endif %}
+                </tbody>
+              </table>
+            </div>
+
+            <!-- Pagination -->
+            {% if total_pages > 1 %}
+            <nav aria-label="Page navigation">
+              <ul class="pagination justify-content-center">
+                {% if page > 1 %}
+                <li class="page-item">
+                  <a class="page-link" href="?page={{ page - 1 }}{% if status %}&status={{ status }}{% endif %}{% if method %}&method={{ method }}{% endif %}{% if search %}&search={{ search }}{% endif %}">Trước</a>
+                </li>
+                {% endif %}
+                
+                {% for p in range(1, total_pages + 1) %}
+                  {% if p == page %}
+                  <li class="page-item active">
+                    <span class="page-link">{{ p }}</span>
+                  </li>
+                  {% elif p <= 3 or p > total_pages - 3 or (p >= page - 1 and p <= page + 1) %}
+                  <li class="page-item">
+                    <a class="page-link" href="?page={{ p }}{% if status %}&status={{ status }}{% endif %}{% if method %}&method={{ method }}{% endif %}{% if search %}&search={{ search }}{% endif %}">{{ p }}</a>
+                  </li>
+                  {% elif p == 4 or p == total_pages - 3 %}
+                  <li class="page-item disabled">
+                    <span class="page-link">...</span>
+                  </li>
+                  {% endif %}
+                {% endfor %}
+                
+                {% if page < total_pages %}
+                <li class="page-item">
+                  <a class="page-link" href="?page={{ page + 1 }}{% if status %}&status={{ status }}{% endif %}{% if method %}&method={{ method }}{% endif %}{% if search %}&search={{ search }}{% endif %}">Sau</a>
+                </li>
+                {% endif %}
+              </ul>
+            </nav>
+            {% endif %}
+
+            <div class="mt-3">
+              <p class="text-muted">Tổng số: <strong>{{ total }}</strong> giao dịch</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+

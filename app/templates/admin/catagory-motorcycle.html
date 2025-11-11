@@ -1,0 +1,459 @@
+{% extends 'admin/layout.html' %}
+
+{% block title %}Admin - Quản lý loại xe{% endblock %}
+
+{% block page_content %}
+{% if motorcycles is not defined %}
+<div class="content-page">
+  <div class="container-fluid">
+    <div class="alert alert-danger" role="alert">
+      <strong>Debug:</strong> biến <code>motorcycles</code> không được truyền tới template. 
+      Hãy kiểm tra view Flask và đảm bảo bạn trả về: 
+      <code>return render_template('admin/catagory-motorcycle.html', motorcycles=motorcycles)</code>
+    </div>
+  </div>
+</div>
+{% else %}
+<div class="content-page">
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-sm-12">
+        <div class="card">
+          <div class="card-header d-flex justify-content-between">
+            <h4 class="card-title">Danh sách xe</h4>
+            <button class="btn btn-primary" onclick="openMotorcycleModal()">
+              <i class="las la-plus"></i> Thêm xe mới
+            </button>
+          </div>
+          <div class="card-body">
+            <div class="table-responsive">
+              <table class="table table-striped table-bordered mt-4">
+                <thead>
+                  <tr>
+                    <th>ID</th>
+                    <th>Tên</th>
+                    <th>Hãng</th>
+                    <th>Phân khối</th>
+                    <th>Giá/ngày</th>
+                    <th>Ảnh</th>
+                    <th>Hành động</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for m in motorcycles %}
+                  <tr>
+                    <td>{{ m.id }}</td>
+                    <td>{{ m.name }}</td>
+                    <td>{{ m.brand or '' }}</td>
+                    <td>{{ m.engine_capacity or '' }}</td>
+                    <td>{{ "{:,.0f}".format(m.price_per_day) if m.price_per_day else '' }} VNĐ</td>
+                    <td>
+                      {% if m.image %}
+                  {# Nếu m.image là URL đầy đủ thì dùng luôn, ngược lại coi là đường dẫn static cục bộ #}
+                  <img src="{{ m.image if m.image.startswith('http') else (url_for('static', filename=m.image)) }}" alt="{{ m.name }}" style="height:48px; max-width: 100px; object-fit: cover;"/>
+                      {% else %}
+                        <span class="text-muted">Chưa có ảnh</span>
+                      {% endif %}
+                    </td>
+                    <td>
+                      <button class="btn btn-sm btn-secondary" data-motorcycle-id="{{ m.id }}" onclick="openMotorcycleModal(parseInt(this.getAttribute('data-motorcycle-id')))">
+                        <i class="las la-edit"></i> Sửa
+                      </button>
+                      <form method="post" action="{{ url_for('admin.catagorie_motorcycle_delete', m_id=m.id) }}" style="display:inline" class="confirm-delete" data-confirm-message="Xóa loại xe này?">
+                        <button type="submit" class="btn btn-sm btn-danger">
+                          <i class="las la-trash"></i> Xóa
+                        </button>
+                      </form>
+                    </td>
+                  </tr>
+                  {% else %}
+                  <tr><td colspan="7" class="text-center">Chưa có xe nào.</td></tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Motorcycle Modal -->
+<div class="modal fade" id="motorcycleModal" tabindex="-1" role="dialog" aria-labelledby="motorcycleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="motorcycleModalLabel">Thêm xe mới</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <form id="motorcycleForm" method="post" enctype="multipart/form-data">
+        <div class="modal-body">
+          <div class="form-group">
+            <label>Tên <span class="text-danger">*</span></label>
+            <input class="form-control" name="name" id="form_name" required>
+          </div>
+          <div class="form-group">
+            <label>Hãng</label>
+            <input class="form-control" name="brand" id="form_brand">
+          </div>
+          <div class="form-group">
+            <label>Phân khối</label>
+            <input class="form-control" name="engine_capacity" id="form_engine_capacity">
+          </div>
+          <div class="form-row">
+            <div class="form-group col-md-4">
+              <label>Giá/ngày</label>
+              <input type="number" class="form-control" name="price_per_day" id="form_price_per_day" step="0.01">
+            </div>
+            <div class="form-group col-md-4">
+              <label>Giá/tuần</label>
+              <input type="number" class="form-control" name="price_per_week" id="form_price_per_week" step="0.01">
+            </div>
+            <div class="form-group col-md-4">
+              <label>Giá/tháng</label>
+              <input type="number" class="form-control" name="price_per_month" id="form_price_per_month" step="0.01">
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Ảnh xe</label>
+
+            <style>
+              /* Scoped styles for image drop zone */
+              .image-drop-zone {
+                border: 2px dashed #e0e0e0;
+                border-radius: 8px;
+                padding: 18px;
+                text-align: center;
+                cursor: pointer;
+                background: #fafafa;
+                transition: background .15s ease, border-color .15s ease;
+              }
+              .image-drop-zone.dragover {
+                background: #f0f8ff;
+                border-color: #66afe9;
+              }
+              .image-drop-zone .drop-inner {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                gap: 6px;
+                color: #6c757d;
+              }
+              .image-drop-zone .drop-inner i {
+                font-size: 36px;
+                color: #6c757d;
+              }
+              .image-drop-zone .choose-btn {
+                text-decoration: underline;
+                cursor: pointer;
+                color: #007bff;
+                background: none;
+                border: none;
+                padding: 0;
+              }
+            </style>
+
+            <div id="imageDropZone" class="image-drop-zone" title="Kéo thả ảnh hoặc nhấp để chọn">
+              <!-- keep input in DOM but move off-screen so programmatic click is allowed -->
+              <input type="file" class="form-control-file" name="image_file" id="form_image_file" accept="image/*" style="position: absolute; left: -9999px;">
+              <div class="drop-inner">
+                <i class="las la-cloud-upload-alt"></i>
+                <div>
+                  <strong>Kéo thả ảnh vào đây</strong>
+                  <div>hoặc <button type="button" id="chooseImageBtn" class="choose-btn">chọn file</button></div>
+                </div>
+                <small class="text-muted">Định dạng: JPG/PNG. Kích thước tối đa tùy cấu hình server.</small>
+              </div>
+            </div>
+
+            <div class="mb-2 mt-2">
+              <small class="text-muted">Hoặc nhập URL ảnh:</small>
+              <input type="text" class="form-control" name="image" id="form_image" placeholder="https://example.com/image.jpg" onchange="previewImageUrl(this.value)">
+            </div>
+
+            <div id="imagePreview" class="mt-2" style="display: none;">
+              <img id="previewImg" src="" alt="Preview" style="max-width: 100%; max-height: 300px; border: 1px solid #ddd; border-radius: 4px; padding: 5px;">
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Hủy</button>
+          <button type="submit" class="btn btn-primary">Lưu</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+<!-- end Motorcycle Modal -->
+
+<!-- Confirm Delete Modal (added) -->
+<div class="modal fade" id="confirmDeleteModal" tabindex="-1" role="dialog" aria-labelledby="confirmDeleteModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="confirmDeleteModalLabel">Xác nhận</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Đóng">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <!-- message will be injected here -->
+        <p id="confirmDeleteMessage" class="mb-0">Bạn có chắc muốn xóa?</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" id="cancelDeleteBtn" class="btn btn-secondary" data-dismiss="modal">Hủy</button>
+        <button type="button" id="confirmDeleteBtn" class="btn btn-danger">Xóa</button>
+      </div>
+    </div>
+  </div>
+</div>
+{% endif %}
+{% endblock %}
+
+{% block scripts %}
+<script>
+let currentMotorcycleId = null;
+
+function openMotorcycleModal(motorcycleId = null) {
+    currentMotorcycleId = motorcycleId;
+    const modal = $('#motorcycleModal');
+    const form = $('#motorcycleForm');
+    const preview = $('#imagePreview');
+    const dropzone = $('#imageDropZone');
+    const fileInput = $('#form_image_file');
+
+    // Reset form
+    form[0].reset();
+    preview.hide();
+    $('#previewImg').attr('src', '');
+    fileInput.val('');
+    dropzone.removeClass('dragover');
+
+    if (motorcycleId) {
+        // Load data for edit
+        $('#motorcycleModalLabel').text('Sửa xe');
+        form.attr('action', `/admin/catagorie_motorcycle/${motorcycleId}/edit`);
+
+        fetch(`/admin/catagorie_motorcycle/${motorcycleId}/edit`)
+            .then(response => response.json())
+            .then(data => {
+                if (data.success && data.motorcycle) {
+                    const m = data.motorcycle;
+                    $('#form_name').val(m.name);
+                    $('#form_brand').val(m.brand);
+                    $('#form_engine_capacity').val(m.engine_capacity);
+                    $('#form_price_per_day').val(m.price_per_day);
+                    $('#form_price_per_week').val(m.price_per_week);
+                    $('#form_price_per_month').val(m.price_per_month);
+                    $('#form_image').val(m.image);
+
+          if (m.image) {
+            // Nếu m.image không phải URL, coi là đường dẫn static cục bộ
+            const imageUrl = m.image.startsWith('http') ? m.image : `/static/${m.image}`;
+            $('#previewImg').attr('src', imageUrl);
+            preview.show();
+          }
+                }
+            })
+            .catch(error => {
+                console.error('Error loading motorcycle:', error);
+                alert('Không thể tải thông tin xe');
+            });
+    } else {
+        // New motorcycle
+        $('#motorcycleModalLabel').text('Thêm xe mới');
+        form.attr('action', '/admin/catagorie_motorcycle/new');
+    }
+
+    modal.modal('show');
+}
+
+// preview from file input or File object
+function previewImage(inputOrFile) {
+    const preview = $('#imagePreview');
+    const img = $('#previewImg');
+
+    if (!inputOrFile) {
+        preview.hide();
+        img.attr('src', '');
+        return;
+    }
+
+    // If passed an <input> element
+    if (inputOrFile.files && inputOrFile.files[0]) {
+        const file = inputOrFile.files[0];
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            img.attr('src', e.target.result);
+            preview.show();
+        };
+        reader.onerror = function() {
+            alert('Không thể đọc file ảnh');
+            preview.hide();
+        };
+        reader.readAsDataURL(file);
+        return;
+    }
+
+    // If passed a File object
+    if (inputOrFile instanceof File) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            img.attr('src', e.target.result);
+            preview.show();
+        };
+        reader.onerror = function() {
+            alert('Không thể đọc file ảnh');
+            preview.hide();
+        };
+        reader.readAsDataURL(inputOrFile);
+        return;
+    }
+
+    // otherwise hide
+    preview.hide();
+}
+
+// preview from URL (unchanged logic but ensures preview is shown/hidden properly)
+function previewImageUrl(url) {
+  if (url && url.trim()) {
+    // Nếu không phải URL đầy đủ, coi là đường dẫn static cục bộ
+    const imageUrl = url.startsWith('http') ? url : `/static/${url}`;
+    const img = $('#previewImg');
+    img.attr('src', imageUrl);
+    img.off('error').on('error', function() {
+      $(this).attr('src', '');
+      $('#imagePreview').hide();
+      alert('Không thể tải ảnh từ URL này');
+    });
+    $('#imagePreview').show();
+  } else {
+    $('#imagePreview').hide();
+  }
+}
+
+// Setup dropzone listeners
+$(function(){
+    const dropzone = $('#imageDropZone');
+    const fileInput = $('#form_image_file');
+    const chooseBtn = $('#chooseImageBtn');
+
+    // Click on dropzone or choose button opens file dialog
+    dropzone.on('click', function(e){
+        // avoid double-trigger when clicking internal controls
+        if (e.target && e.target.id === 'chooseImageBtn') return;
+        if (fileInput && fileInput[0]) fileInput[0].click();
+    });
+    chooseBtn.on('click', function(e){
+        e.stopPropagation();
+        if (fileInput && fileInput[0]) fileInput[0].click();
+    });
+
+    // File input change -> preview
+    fileInput.on('change', function(){
+        if (this.files && this.files[0]) {
+            // clear URL input when a file is chosen
+            $('#form_image').val('');
+            previewImage(this);
+        }
+    });
+
+    // Drag events
+    dropzone.on('dragover', function(e){
+        e.preventDefault();
+        e.stopPropagation();
+        $(this).addClass('dragover');
+    });
+    dropzone.on('dragleave drop', function(e){
+        e.preventDefault();
+        e.stopPropagation();
+        if (e.type === 'dragleave') {
+            $(this).removeClass('dragover');
+        }
+    });
+    dropzone.on('drop', function(e){
+        e.preventDefault();
+        e.stopPropagation();
+        $(this).removeClass('dragover');
+        const evt = e.originalEvent;
+        if (evt.dataTransfer && evt.dataTransfer.files && evt.dataTransfer.files.length) {
+            const file = evt.dataTransfer.files[0];
+            // populate the hidden file input (so server receives it) using DataTransfer if supported
+            try {
+                const dataTransfer = new DataTransfer();
+                dataTransfer.items.add(file);
+                fileInput[0].files = dataTransfer.files;
+            } catch (err) {
+                // fallback: can't set files programmatically in some browsers; leave fileInput unchanged
+            }
+            // clear URL input when a file is dropped
+            $('#form_image').val('');
+            previewImage(file);
+        }
+    });
+});
+
+// Handle form submission (keep existing behavior)
+$('#motorcycleForm').off('submit').on('submit', function(e) {
+    e.preventDefault();
+    const formData = new FormData(this);
+    const action = $(this).attr('action');
+
+    fetch(action, {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            $('#motorcycleModal').modal('hide');
+            window.location.reload();
+        } else {
+            alert(data.message || 'Có lỗi xảy ra');
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        window.location.reload();
+    });
+});
+
+// Confirm-delete modal handling (added)
+(function(){
+  let formToDelete = null;
+
+  // Delegate submit for any form with class confirm-delete
+  $(document).on('submit', 'form.confirm-delete', function(e){
+    e.preventDefault();
+    formToDelete = this;
+    const msg = $(this).data('confirm-message') || 'Bạn có chắc chắn muốn thực hiện hành động này?';
+    $('#confirmDeleteMessage').text(msg);
+    $('#confirmDeleteModal').modal('show');
+  });
+
+  // When user confirms, submit the stored form
+  $('#confirmDeleteBtn').on('click', function(){
+    if (!formToDelete) {
+      $('#confirmDeleteModal').modal('hide');
+      return;
+    }
+    // Unbind handler to avoid recursion and submit normally
+    // Using setTimeout to allow modal to hide smoothly before navigation
+    $(formToDelete).off('submit');
+    $('#confirmDeleteModal').modal('hide');
+    setTimeout(function(){
+      formToDelete.submit();
+    }, 150);
+  });
+
+  // Optional: clear reference on cancel/hidden
+  $('#confirmDeleteModal').on('hidden.bs.modal', function(){
+    formToDelete = null;
+  });
+})();
+</script>
+{% endblock %}

@@ -65,7 +65,7 @@
           </div>
           <div class="card-body">
             <ul class="list-inline p-0 mb-0 row align-items-center">
-              <li class="col-lg-6 col-sm-6 mb-3 mb-sm-0"> 
+              <li class="col-lg-4 col-sm-6 mb-3 mb-sm-0"> 
                 <a href="{{ url_for('admin.motorcycles') }}" class="p-2 text-center border rounded d-block">
                   <div>
                     <i class="las la-motorcycle" style="font-size: 2rem; color: #007bff;"></i>
@@ -73,10 +73,34 @@
                   <p class="mb-0">Quản lý xe</p>
                 </a>
               </li>
-              <li class="col-lg-6 col-sm-6"> 
+              <li class="col-lg-4 col-sm-6 mb-3 mb-sm-0"> 
+                <a href="{{ url_for('admin.customers') }}" class="p-2 text-center border rounded d-block">
+                  <div>
+                    <i class="las la-users" style="font-size: 2rem; color: #17a2b8;"></i>
+                  </div>
+                  <p class="mb-0">Khách hàng</p>
+                </a>
+              </li>
+              <li class="col-lg-4 col-sm-6 mb-3 mb-sm-0"> 
+                <a href="{{ url_for('admin.rentals') }}" class="p-2 text-center border rounded d-block">
+                  <div>
+                    <i class="las la-file-invoice-dollar" style="font-size: 2rem; color: #ffc107;"></i>
+                  </div>
+                  <p class="mb-0">Đơn thuê</p>
+                </a>
+              </li>
+              <li class="col-lg-4 col-sm-6 mb-3 mb-sm-0"> 
+                <a href="{{ url_for('admin.payments') }}" class="p-2 text-center border rounded d-block">
+                  <div>
+                    <i class="las la-money-check-alt" style="font-size: 2rem; color: #28a745;"></i>
+                  </div>
+                  <p class="mb-0">Giao dịch</p>
+                </a>
+              </li>
+              <li class="col-lg-4 col-sm-6"> 
                 <a href="{{ url_for('admin.admin_index') }}" class="p-2 text-center border rounded d-block">
                   <div>
-                    <i class="las la-chart-bar" style="font-size: 2rem; color: #28a745;"></i>
+                    <i class="las la-chart-bar" style="font-size: 2rem; color: #6c757d;"></i>
                   </div>
                   <p class="mb-0">Thống kê</p>
                 </a>

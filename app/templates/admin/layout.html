@@ -12,26 +12,13 @@
       <div class="iq-sidebar  sidebar-default ">
               <div class="iq-sidebar-logo d-flex align-items-center justify-content-between">
               <a href="{{ url_for('admin.admin_index') }}" class="header-logo">
-                  <img src="{{ url_for('static', filename='images/logo.png') }}" class="img-fluid rounded-normal light-logo" alt="logo">
+                  <img src="{{ url_for('static', filename='accssets/logo-chothuexemayanhkhanh.png') }}" class="img-fluid rounded-normal light-logo" alt="logo" style="max-height: 60px; width: auto;">
                </a>
               <div class="iq-menu-bt-sidebar">
                   <i class="las la-bars wrapper-menu"></i>
               </div>
           </div>
           <div class="data-scrollbar" data-scroll="1">
-              <div class="new-create select-dropdown input-prepend input-append">
-                  <div class="btn-group">
-                      <div data-toggle="dropdown">
-                      <div class="search-query selet-caption"><i class="las la-plus pr-2"></i>Create New</div><span class="search-replace"></span>
-                      <span class="caret"><!--icon--></span>
-                      </div>
-                      <ul class="dropdown-menu">
-                          <li><div class="item"><i class="ri-folder-add-line pr-3"></i>New Folder</div></li>
-                          <li><div class="item"><i class="ri-file-upload-line pr-3"></i>Upload Files</div></li>
-                          <li><div class="item"><i class="ri-folder-upload-line pr-3"></i>Upload Folders</div></li>
-                      </ul>
-                  </div>
-              </div>
               <nav class="iq-sidebar-menu">
                   <ul id="iq-sidebar-toggle" class="iq-menu">
                        <li class="{% if request.endpoint == 'admin.admin_index' %}active{% endif %}">
@@ -41,289 +28,58 @@
                           <ul id="dashboard" class="iq-submenu collapse" data-parent="#iq-sidebar-toggle">
                           </ul>
                        </li>
-                       <li class="{% if request.endpoint and request.endpoint.startswith('admin.motor') %}active{% endif %}">
-                              <a href="{{ url_for('admin.motorcycles') }}" class="{% if request.endpoint and request.endpoint.startswith('admin.motor') %}active{% endif %}">
-                                  <i class="lar la-file-alt iq-arrow-left"></i><span>Quản lý loại xe</span>
+                       <li class="{% if request.endpoint == 'admin.catagories_motorcycle' %}active{% endif %}">
+                              <a href="{{ url_for('admin.catagories_motorcycle') }}" class="{% if request.endpoint and request.endpoint.startswith('admin.motor') and not request.endpoint.startswith('admin.detail_motorcycle') %}active{% endif %}">
+                                  <i class="las la-list-ul iq-arrow-left"></i><span>Quản lý loại xe</span>
                               </a>
                           <ul id="page-files" class="iq-submenu collapse" data-parent="#iq-sidebar-toggle">
                           </ul>
                        </li>
-                       <li class=" ">
-                              <a href="{{ url_for('static', filename='backend/page-folders.html') }}" class="">
-                                  <i class="las la-stopwatch iq-arrow-left"></i><span>Recent</span>
+                       <li class="{% if request.endpoint == 'admin.motorcycles' %}active{% endif %}">
+                              <a href="{{ url_for('admin.motorcycles') }}" class="{% if request.endpoint and request.endpoint.startswith('admin.detail_motorcycle') %}active{% endif %}">
+                                  <i class="las la-motorcycle iq-arrow-left"></i><span>Quản lý xe</span>
+                              </a>
+                          <ul id="detail-motorcycle" class="iq-submenu collapse" data-parent="#iq-sidebar-toggle">
+                          </ul>
+                       </li>
+                       <li class="{% if request.endpoint == 'admin.articles' %}active{% endif %}">
+                              <a href="{{ url_for('admin.articles') }}" class="">
+                                  <i class="las la-newspaper iq-arrow-left"></i><span>Quản lý bài viết</span>
                               </a>
                           <ul id="page-folders" class="iq-submenu collapse" data-parent="#iq-sidebar-toggle">
                           </ul>
                        </li>
-                       <li class=" ">
-                              <a href="{{ url_for('static', filename='backend/page-favourite.html') }}" class="">
-                                  <i class="lar la-star"></i><span>Favourite</span>
+                        <li class="{% if request.endpoint == 'admin.store_info' %}active{% endif %}">
+                            <a href="{{ url_for('admin.store_info') }}" class="">
+                                  <i class="las la-store iq-arrow-left"></i><span>Thông tin cửa hàng</span>
                               </a>
-                          <ul id="page-fevourite" class="iq-submenu collapse" data-parent="#iq-sidebar-toggle">
+                          <ul id="page-folders" class="iq-submenu collapse" data-parent="#iq-sidebar-toggle">
                           </ul>
                        </li>
-                       <li class=" ">
-                              <a href="{{ url_for('static', filename='backend/page-delete.html') }}" class="">
-                                  <i class="las la-trash-alt iq-arrow-left"></i><span>Trash</span>
+                       <li class="{% if request.endpoint == 'admin.customers' or request.endpoint == 'admin.customer_detail' %}active{% endif %}">
+                            <a href="{{ url_for('admin.customers') }}" class="">
+                                  <i class="las la-user-friends iq-arrow-left"></i><span>Quản lý khách hàng</span>
                               </a>
-                          <ul id="page-delete" class="iq-submenu collapse" data-parent="#iq-sidebar-toggle">
+                          <ul id="page-customers" class="iq-submenu collapse" data-parent="#iq-sidebar-toggle">
                           </ul>
                        </li>
-                       <li class=" ">
-                          <a href="#otherpage" class="collapsed" data-toggle="collapse" aria-expanded="false">
-                              <i class="lab la-wpforms iq-arrow-left"></i><span>other page</span>
-                              <i class="las la-angle-right iq-arrow-right arrow-active"></i>
-                              <i class="las la-angle-down iq-arrow-right arrow-hover"></i>
-                          </a>
-                          <ul id="otherpage" class="iq-submenu collapse" data-parent="#iq-sidebar-toggle">
-                                  <li class=" ">
-                                      <a href="#user" class="collapsed" data-toggle="collapse" aria-expanded="false">
-                                          <i class="las la-user-cog"></i><span>User Details</span>
-                                          <i class="las la-angle-right iq-arrow-right arrow-active"></i>
-                                          <i class="las la-angle-down iq-arrow-right arrow-hover"></i>
-                                      </a>
-                                      <ul id="user" class="iq-submenu collapse" data-parent="#otherpage">
-                                              <li class=" ">
-                                                  <a href="{{ url_for('static', filename='app/user-profile.html') }}">
-                                                      <i class="las la-id-card"></i><span>User Profile</span>
-                                                  </a>
-                                              </li>
-                                              <li class=" ">
-                                                  <a href="{{ url_for('static', filename='app/user-add.html') }}">
-                                                      <i class="las la-user-plus"></i><span>User Add</span>
-                                                  </a>
-                                              </li>
-                                              <li class=" ">
-                                                  <a href="{{ url_for('static', filename='app/user-list.html') }}">
-                                                      <i class="las la-list-alt"></i><span>User List</span>
-                                                  </a>
-                                              </li>
-                                      </ul>
-                                  </li>
-                                  <li class=" ">
-                                      <a href="#ui" class="collapsed" data-toggle="collapse" aria-expanded="false">
-                                          <i class="lab la-uikit iq-arrow-left"></i><span>UI Elements</span>
-                                          <i class="las la-angle-right iq-arrow-right arrow-active"></i>
-                                          <i class="las la-angle-down iq-arrow-right arrow-hover"></i>
-                                      </a>
-                                      <ul id="ui" class="iq-submenu collapse" data-parent="#otherpage">
-                                              <li class=" ">
-                                                  <a href="{{ url_for('static', filename='backend/ui-avatars.html') }}">
-                                                      <i class="las la-user-tie"></i><span>Avatars</span>
-                                                  </a>
-                                              </li>
-                                              <li class=" ">
-                                                  <a href="{{ url_for('static', filename='backend/ui-alerts.html') }}">
-                                                      <i class="las la-exclamation-triangle"></i><span>Alerts</span>
-                                                  </a>
-                                              </li>
-                                              <li class=" ">
-                                                  <a href="{{ url_for('static', filename='backend/ui-badges.html') }}">
-                                                      <i class="las la-id-badge"></i><span>Badges</span>
-                                                  </a>
-                                              </li>
-                                              <li class=" ">
-                                                  <a href="{{ url_for('static', filename='backend/ui-breadcrumb.html') }}">
-                                                      <i class="las la-ellipsis-h"></i><span>Breadcrumb</span>
-                                                  </a>
-                                              </li>
-                                              <li class=" ">
-                                                  <a href="{{ url_for('static', filename='backend/ui-buttons.html') }}">
-                                                      <i class="las la-ticket-alt"></i><span>Buttons</span>
-                                                  </a>
-                                              </li>
-                                              <li class=" ">
-                                                  <a href="{{ url_for('static', filename='backend/ui-buttons-group.html') }}">
-                                                      <i class="las la-object-group"></i><span>Buttons Group</span>
-                                                  </a>
-                                              </li>
-                                              <li class=" ">
-                                                  <a href="{{ url_for('static', filename='backend/ui-boxshadow.html') }}">
-                                                      <i class="las la-boxes"></i><span>Box Shadow</span>
-                                                  </a>
-                                              </li>
-                                              <li class=" ">
-                                                  <a href="{{ url_for('static', filename='backend/ui-colors.html') }}">
-                                                      <i class="las la-brush"></i><span>Colors</span>
-                                                  </a>
-                                              </li>
-                                              <li class=" ">
-                                                  <a href="{{ url_for('static', filename='backend/ui-cards.html') }}">
-                                                      <i class="las la-credit-card"></i><span>Cards</span>
-                                                  </a>
-                                              </li>
-                                              <li class=" ">
-                                                  <a href="{{ url_for('static', filename='backend/ui-carousel.html') }}">
-                                                      <i class="las la-sliders-h"></i><span>Carousel</span>
-                                                  </a>
-                                              </li>
-                                              <li class=" ">
-                                                  <a href="{{ url_for('static', filename='backend/ui-grid.html') }}">
-                                                      <i class="las la-th-large"></i><span>Grid</span>
-                                                  </a>
-                                              </li>
-                                              <li class=" ">
-                                                  <a href="{{ url_for('static', filename='backend/ui-helper-classes.html') }}">
-                                                      <i class="las la-hands-helping"></i><span>Helper classes</span>
-                                                  </a>
-                                              </li>
-                                              <li class=" ">
-                                                  <a href="{{ url_for('static', filename='backend/ui-images.html') }}">
-                                                      <i class="las la-image"></i><span>Images</span>
-                                                  </a>
-                                              </li>
-                                              <li class=" ">
-                                                  <a href="{{ url_for('static', filename='backend/ui-list-group.html') }}">
-                                                      <i class="las la-list-alt"></i><span>list Group</span>
-                                                  </a>
-                                              </li>
-                                              <li class=" ">
-                                                  <a href="{{ url_for('static', filename='backend/ui-media-object.html') }}">
-                                                      <i class="las la-photo-video"></i><span>Media</span>
-                                                  </a>
-                                              </li>
-                                              <li class=" ">
-                                                  <a href="{{ url_for('static', filename='backend/ui-modal.html') }}">
-                                                      <i class="las la-columns"></i><span>Modal</span>
-                                                  </a>
-                                              </li>
-                                              <li class=" ">
-                                                  <a href="{{ url_for('static', filename='backend/ui-notifications.html') }}">
-                                                      <i class="las la-bell"></i><span>Notifications</span>
-                                                  </a>
-                                              </li>
-                                              <li class=" ">
-                                                  <a href="{{ url_for('static', filename='backend/ui-pagination.html') }}">
-                                                      <i class="las la-ellipsis-h"></i><span>Pagination</span>
-                                                  </a>
-                                              </li>
-                                              <li class=" ">
-                                                  <a href="{{ url_for('static', filename='backend/ui-popovers.html') }}">
-                                                      <i class="las la-spinner"></i><span>Popovers</span>
-                                                  </a>
-                                              </li>
-                                              <li class=" ">
-                                                  <a href="{{ url_for('static', filename='backend/ui-progressbars.html') }}">
-                                                      <i class="las la-heading"></i><span>Progressbars</span>
-                                                  </a>
-                                              </li>
-                                              <li class=" ">
-                                                  <a href="{{ url_for('static', filename='backend/ui-typography.html') }}">
-                                                      <i class="las la-tablet"></i><span>Typography</span>
-                                                  </a>
-                                              </li>
-                                              <li class=" ">
-                                                  <a href="{{ url_for('static', filename='backend/ui-tabs.html') }}">
-                                                      <i class="las la-tablet"></i><span>Tabs</span>
-                                                  </a>
-                                              </li>
-                                              <li class=" ">
-                                                  <a href="{{ url_for('static', filename='backend/ui-tooltips.html') }}">
-                                                      <i class="las la-magnet"></i><span>Tooltips</span>
-                                                  </a>
-                                              </li>
-                                              <li class=" ">
-                                                  <a href="{{ url_for('static', filename='backend/ui-embed-video.html') }}">
-                                                      <i class="las la-play-circle"></i><span>Video</span>
-                                                  </a>
-                                              </li>
-                                      </ul>
-                                  </li>
-                                  <li class=" ">
-                                      <a href="#auth" class="collapsed" data-toggle="collapse" aria-expanded="false">
-                                          <i class="las la-torah iq-arrow-left"></i><span>Authentication</span>
-                                          <i class="las la-angle-right iq-arrow-right arrow-active"></i>
-                                          <i class="las la-angle-down iq-arrow-right arrow-hover"></i>
-                                      </a>
-                                      <ul id="auth" class="iq-submenu collapse" data-parent="#otherpage">
-                                              <li class=" ">
-                                                  <a href="{{ url_for('admin.admin_login_page') }}">
-                                                      <i class="las la-sign-in-alt"></i><span>Login</span>
-                                                  </a>
-                                              </li>
-                                              <li class=" ">
-                                                  <a href="{{ url_for('admin.admin_register_page') }}">
-                                                      <i class="las la-registered"></i><span>Register</span>
-                                                  </a>
-                                              </li>
-                                              <li class=" ">
-                                                  <a href="{{ url_for('static', filename='backend/auth-recoverpw.html') }}">
-                                                      <i class="las la-unlock-alt"></i><span>Recover Password</span>
-                                                  </a>
-                                              </li>
-                                              <li class=" ">
-                                                  <a href="{{ url_for('static', filename='backend/auth-confirm-mail.html') }}">
-                                                      <i class="las la-envelope-square"></i><span>Confirm Mail</span>
-                                                  </a>
-                                              </li>
-                                              <li class=" ">
-                                                  <a href="{{ url_for('static', filename='backend/auth-lock-screen.html') }}">
-                                                      <i class="las la-lock"></i><span>Lock Screen</span>
-                                                  </a>
-                                              </li>
-                                      </ul>
-                                  </li>
-                                  <li class=" ">
-                                      <a href="#pricing" class="collapsed" data-toggle="collapse" aria-expanded="false">
-                                          <i class="las la-coins"></i><span>Pricing</span>
-                                          <i class="las la-angle-right iq-arrow-right arrow-active"></i>
-                                          <i class="las la-angle-down iq-arrow-right arrow-hover"></i>
-                                      </a>
-                                      <ul id="pricing" class="iq-submenu collapse" data-parent="#otherpage">
-                                              <li class=" ">
-                                                  <a href="{{ url_for('static', filename='backend/pricing.html') }}">
-                                                      <i class="las la-weight"></i><span>Pricing 1</span>
-                                                  </a>
-                                              </li>
-                                              <li class=" ">
-                                                  <a href="{{ url_for('static', filename='backend/pricing-2.html') }}">
-                                                      <i class="las la-dna"></i><span>Pricing 2</span>
-                                                  </a>
-                                              </li>
-                                      </ul>
-                                  </li>
-                                  <li class=" ">
-                                      <a href="#pages-error" class="collapsed" data-toggle="collapse" aria-expanded="false">
-                                          <i class="las la-exclamation-triangle"></i><span>Error</span>
-                                          <i class="las la-angle-right iq-arrow-right arrow-active"></i>
-                                          <i class="las la-angle-down iq-arrow-right arrow-hover"></i>
-                                      </a>
-                                      <ul id="pages-error" class="iq-submenu collapse" data-parent="#otherpage">
-                                              <li class=" ">
-                                                  <a href="{{ url_for('static', filename='backend/pages-error.html') }}">
-                                                      <i class="las la-bomb"></i><span>Error 404</span>
-                                                  </a>
-                                              </li>
-                                              <li class=" ">
-                                                  <a href="{{ url_for('static', filename='backend/pages-error-500.html') }}">
-                                                      <i class="las la-exclamation-circle"></i><span>Error 500</span>
-                                                  </a>
-                                              </li>
-                                      </ul>
-                                  </li>
-                                  <li class=" ">
-                                          <a href="{{ url_for('static', filename='backend/pages-blank-page.html') }}">
-                                              <i class="las la-pager"></i><span>Blank Page</span>
-                                          </a>
-                                  </li>
-                                  <li class=" ">
-                                          <a href="{{ url_for('static', filename='backend/pages-maintenance.html') }}">
-                                              <i class="las la-cubes"></i><span>Maintenance</span>
-                                          </a>
-                                  </li>
+                       <li class="{% if request.endpoint == 'admin.rentals' or request.endpoint == 'admin.rental_detail' or request.endpoint == 'admin.rental_update_status' %}active{% endif %}">
+                            <a href="{{ url_for('admin.rentals') }}" class="">
+                                  <i class="las la-file-invoice iq-arrow-left"></i><span>Quản lý đơn thuê</span>
+                              </a>
+                          <ul id="page-rentals" class="iq-submenu collapse" data-parent="#iq-sidebar-toggle">
+                          </ul>
+                       </li>
+                       <li class="{% if request.endpoint == 'admin.payments' or request.endpoint == 'admin.payment_detail' %}active{% endif %}">
+                            <a href="{{ url_for('admin.payments') }}" class="">
+                                  <i class="las la-credit-card iq-arrow-left"></i><span>Quản lý giao dịch</span>
+                              </a>
+                          <ul id="page-payments" class="iq-submenu collapse" data-parent="#iq-sidebar-toggle">
                           </ul>
                        </li>
                   </ul>
               </nav>
               <div class="sidebar-bottom">
-                  <h4 class="mb-3"><i class="las la-cloud mr-2"></i>Storage</h4>
-                  <p>17.1 / 20 GB Used</p>
-                  <div class="iq-progress-bar mb-3">
-                      <span class="bg-primary iq-progress progress-1" data-percent="67">
-                      </span>
-                  </div>
-                  <p>75% Full - 3.9 GB Free</p>
-                  <a href="#" class="btn btn-outline-primary view-more mt-4">Buy Storage</a>
               </div>
               <div class="p-3"></div>
           </div>
@@ -332,9 +88,9 @@
               <nav class="navbar navbar-expand-lg navbar-light p-0">
               <div class="iq-navbar-logo d-flex align-items-center justify-content-between">
                   <i class="ri-menu-line wrapper-menu"></i>
-                  <a href="index.html" class="header-logo">
-                      <img src="{{ url_for('static', filename='images/logo.png') }}" class="img-fluid rounded-normal light-logo" alt="logo">
-                      <img src="{{ url_for('static', filename='images/logo-white.png') }}" class="img-fluid rounded-normal darkmode-logo" alt="logo">
+                  <a href="{{ url_for('admin.admin_index') }}" class="header-logo">
+                      <img src="{{ url_for('static', filename='accssets/logo-chothuexemayanhkhanh.png') }}" class="img-fluid rounded-normal light-logo" alt="logo" style="max-height: 40px; width: auto;">
+                      <img src="{{ url_for('static', filename='accssets/logo-chothuexemayanhkhanh.png') }}" class="img-fluid rounded-normal darkmode-logo" alt="logo" style="max-height: 40px; width: auto;">
                   </a>
               </div>
                   <div class="iq-search-bar device-search">
@@ -343,18 +99,10 @@
                           <div class="input-prepend input-append">
                               <div class="btn-group">
                                   <label class="dropdown-toggle searchbox" data-toggle="dropdown">
-                                  <input class="dropdown-toggle search-query text search-input" type="text"  placeholder="Type here to search..."><span class="search-replace"></span>
+                                  <input class="dropdown-toggle search-query text search-input" type="text"  placeholder="Nhập vào tìm kiếm..."><span class="search-replace"></span>
                                   <a class="search-link" href="#"><i class="ri-search-line"></i></a>
                                   <span class="caret"><!--icon--></span>
                                   </label>
-                                  <ul class="dropdown-menu">
-                                      <li><a href="#"><div class="item"><i class="far fa-file-pdf bg-info"></i>PDFs</div></a></li>
-                                      <li><a href="#"><div class="item"><i class="far fa-file-alt bg-primary"></i>Documents</div></a></li>
-                                      <li><a href="#"><div class="item"><i class="far fa-file-excel bg-success"></i>Spreadsheet</div></a></li>
-                                      <li><a href="#"><div class="item"><i class="far fa-file-powerpoint bg-danger"></i>Presentation</div></a></li>
-                                      <li><a href="#"><div class="item"><i class="far fa-file-image bg-warning"></i>Photos & Images</div></a></li>
-                                      <li><a href="#"><div class="item"><i class="far fa-file-video bg-info"></i>Videos</div></a></li>
-                                  </ul>
                               </div>
                           </div>
                       </form>
@@ -386,13 +134,7 @@
                               <div class="iq-sub-dropdown dropdown-menu" aria-labelledby="dropdownMenuButton01">
                                   <div class="card shadow-none m-0">
                                       <div class="card-body p-0 ">
-                                          <div class="p-3">
-                                              <a href="#" class="iq-sub-card pt-0"><i class="ri-questionnaire-line"></i>Help</a>
-                                              <a href="#" class="iq-sub-card"><i class="ri-recycle-line"></i>Training</a>
-                                              <a href="#" class="iq-sub-card"><i class="ri-refresh-line"></i>Updates</a>
-                                              <a href="#" class="iq-sub-card"><i class="ri-service-line"></i>Terms and Policy</a>
-                                              <a href="#" class="iq-sub-card"><i class="ri-feedback-line"></i>Send Feedback</a>
-                                          </div>
+                                    
                                       </div>
                                   </div>
                               </div>
@@ -403,12 +145,7 @@
                               </a>
                               <div class="iq-sub-dropdown dropdown-menu" aria-labelledby="dropdownMenuButton02">
                                   <div class="card shadow-none m-0">
-                                      <div class="card-body p-0 ">
-                                          <div class="p-3">
-                                              <a href="#" class="iq-sub-card pt-0"><i class="ri-settings-3-line"></i> Settings</a>
-                                              <a href="#" class="iq-sub-card"><i class="ri-hard-drive-line"></i> Get Drive for desktop</a>
-                                              <a href="#" class="iq-sub-card"><i class="ri-keyboard-line"></i> Keyboard Shortcuts</a>
-                                          </div>                                
+                                      <div class="card-body p-0 ">                            
                                       </div>
                                   </div>
                               </div>
@@ -422,7 +159,7 @@
                                   <div class="card mb-0">
                                       <div class="card-header d-flex justify-content-between align-items-center mb-0">
                                       <div class="header-title">
-                                          <h4 class="card-title mb-0">Profile</h4>
+                                          <h4 class="card-title mb-0">Thông tin</h4>
                                       </div>
                                       <div class="close-data text-right badge badge-primary cursor-pointer "><i class="ri-close-fill"></i></div>
                                       </div>
@@ -439,7 +176,7 @@
                                                   <h5><a href="../app/user-profile-edit.html">{{ session.get('account_full_name', 'Guest') }}</a></h5>
                                                   <p>{{ session.get('account_username', 'error@gmail.com') }}</p>
                                                   </div>
-                                                  <a href="{{ url_for('admin.admin_logout') }}" class="btn btn-primary">Sign Out</a>
+                                                  <a href="{{ url_for('admin.admin_logout') }}" class="btn btn-primary">Đăng xuất</a>
                                               </div>
                                           </div>
                                       </div>
@@ -454,6 +191,68 @@
       </div>
         {% block page_content %}
         {% endblock %}
+
+<!-- Site-wide confirmation modal (used for custom confirm instead of browser confirm) -->
+<div class="modal fade" id="confirmModal" tabindex="-1" role="dialog" aria-labelledby="confirmModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="confirmModalLabel">Xác nhận</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p id="confirmModalMessage">Bạn có chắc chắn muốn thực hiện hành động này?</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Hủy</button>
+        <button type="button" id="confirmModalBtn" class="btn btn-danger">Xác nhận</button>
+      </div>
+    </div>
+  </div>
 </div>
-    <!-- Wrapper End-->
+
+<script>
+// Delegated handler: forms with class "confirm-delete" will show the site modal.
+(function($){
+  let pendingForm = null;
+
+  $(document).on('submit', 'form.confirm-delete', function(e){
+    const $form = $(this);
+    // If already confirmed, allow submit (remove flag and continue)
+    if ($form.data('confirmed')) {
+      $form.data('confirmed', false);
+      return true;
+    }
+    e.preventDefault();
+    pendingForm = $form;
+    const message = $form.data('confirm-message') || 'Bạn có chắc chắn muốn xóa?';
+    $('#confirmModalMessage').text(message);
+    $('#confirmModal').modal('show');
+  });
+
+  // Confirm button -> mark form confirmed then submit
+  $('#confirmModalBtn').on('click', function(){
+    if (!pendingForm) {
+      $('#confirmModal').modal('hide');
+      return;
+    }
+    pendingForm.data('confirmed', true);
+    $('#confirmModal').modal('hide');
+    // trigger submit again (will bypass due to data-confirmed flag)
+    setTimeout(function(){
+      pendingForm.trigger('submit');
+      pendingForm = null;
+    }, 50);
+  });
+
+  // clear pending if modal closed by other means
+  $('#confirmModal').on('hidden.bs.modal', function(){
+    pendingForm = null;
+  });
+})(jQuery);
+</script>
+</div>
+     <!-- Wrapper End-->
 {% endblock %}

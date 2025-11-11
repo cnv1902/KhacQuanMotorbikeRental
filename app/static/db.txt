@@ -65,6 +65,7 @@
     deposit_amount	                        Tiền cọc khách đặt.
     paid_amount	                            Số tiền đã thanh toán.
     status	                                Trạng thái đơn: pending / active / completed…
+    quantity	                            Số lượng xe.
     payment_method	                        Phương thức thanh toán (tiền mặt, vnpay…).
     payment_status	                        Trạng thái thanh toán.
     vnpay_transaction_id, vnpay_bank_code	Dữ liệu thanh toán VNPay.
@@ -74,9 +75,9 @@
     id	                                Khóa chính.
     rental_id(Rental)	                Thuộc đơn thuê nào.
     motorcycle_id(Detail_Motorcycle)	Xe nào được thuê.
-    quantity	                        Số lượng xe.
+    
     price_per_day	                    Giá thuê mỗi ngày tại thời điểm thuê.
-    sub_total	                        Thành tiền = giá * số ngày * số lượng.
+  
 8. Bảng Payment – Giao dịch thanh toán
     id	                                                    Khóa chính.
     rental_id	                                            Liên kết đến đơn thuê.

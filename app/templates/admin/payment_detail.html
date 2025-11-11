@@ -1,0 +1,148 @@
+{% extends 'admin/layout.html' %}
+
+{% block title %}Admin - Chi tiết giao dịch{% endblock %}
+
+{% block page_content %}
+<div class="content-page">
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-sm-12">
+        <div class="card">
+          <div class="card-header d-flex justify-content-between">
+            <h4 class="card-title">Chi tiết giao dịch #{{ payment.id }}</h4>
+            <a href="{{ url_for('admin.payments') }}" class="btn btn-secondary">
+              <i class="las la-arrow-left"></i> Quay lại
+            </a>
+          </div>
+          <div class="card-body">
+            <div class="row">
+              <div class="col-md-6">
+                <h5>Thông tin giao dịch</h5>
+                <table class="table table-bordered">
+                  <tr>
+                    <th width="40%">ID:</th>
+                    <td><strong>#{{ payment.id }}</strong></td>
+                  </tr>
+                  <tr>
+                    <th>Mã giao dịch:</th>
+                    <td><strong>{{ payment.payment_code or '-' }}</strong></td>
+                  </tr>
+                  <tr>
+                    <th>Số tiền:</th>
+                    <td><strong class="text-success" style="font-size: 1.2em;">{{ "{:,.0f}".format(payment.amount) if payment.amount else '0' }} VND</strong></td>
+                  </tr>
+                  <tr>
+                    <th>Phương thức thanh toán:</th>
+                    <td>{{ payment.payment_method or '-' }}</td>
+                  </tr>
+                  <tr>
+                    <th>Trạng thái:</th>
+                    <td>
+                      {% if payment.payment_status == 'paid' %}
+                        <span class="badge badge-success">Đã thanh toán</span>
+                      {% elif payment.payment_status == 'pending' %}
+                        <span class="badge badge-warning">Chờ thanh toán</span>
+                      {% elif payment.payment_status == 'failed' %}
+                        <span class="badge badge-danger">Thất bại</span>
+                      {% else %}
+                        <span class="badge badge-secondary">{{ payment.payment_status or '-' }}</span>
+                      {% endif %}
+                    </td>
+                  </tr>
+                  <tr>
+                    <th>Mã giao dịch VNPay:</th>
+                    <td>{{ payment.vnpay_transaction_id or '-' }}</td>
+                  </tr>
+                  <tr>
+                    <th>Ngân hàng:</th>
+                    <td>{{ payment.vnpay_bank_code or '-' }}</td>
+                  </tr>
+                  <tr>
+                    <th>Ngày thanh toán:</th>
+                    <td>{{ payment.payment_date.strftime('%d/%m/%Y %H:%M:%S') if payment.payment_date else '-' }}</td>
+                  </tr>
+                  {% if payment.vnpay_pay_date %}
+                  <tr>
+                    <th>Ngày VNPay xác nhận:</th>
+                    <td>{{ payment.vnpay_pay_date.strftime('%d/%m/%Y %H:%M:%S') }}</td>
+                  </tr>
+                  {% endif %}
+                </table>
+              </div>
+              <div class="col-md-6">
+                <h5>Thông tin đơn thuê</h5>
+                {% if rental %}
+                <table class="table table-bordered">
+                  <tr>
+                    <th width="40%">Mã đơn:</th>
+                    <td><a href="{{ url_for('admin.rental_detail', rental_id=rental.id) }}"><strong>#{{ rental.id }}</strong></a></td>
+                  </tr>
+                  <tr>
+                    <th>Trạng thái:</th>
+                    <td>
+                      {% if rental.status == 'pending' %}
+                        <span class="badge badge-warning">Chờ xác nhận</span>
+                      {% elif rental.status == 'confirmed' %}
+                        <span class="badge badge-info">Đã xác nhận</span>
+                      {% elif rental.status == 'rented' %}
+                        <span class="badge badge-primary">Đang thuê</span>
+                      {% elif rental.status == 'returned' %}
+                        <span class="badge badge-success">Đã trả</span>
+                      {% elif rental.status == 'cancelled' %}
+                        <span class="badge badge-danger">Đã hủy</span>
+                      {% else %}
+                        <span class="badge badge-secondary">{{ rental.status or '-' }}</span>
+                      {% endif %}
+                    </td>
+                  </tr>
+                  <tr>
+                    <th>Tổng tiền:</th>
+                    <td>{{ "{:,.0f}".format(rental.total_amount) if rental.total_amount else '0' }} VND</td>
+                  </tr>
+                  <tr>
+                    <th>Đã thanh toán:</th>
+                    <td>{{ "{:,.0f}".format(rental.paid_amount) if rental.paid_amount else '0' }} VND</td>
+                  </tr>
+                  <tr>
+                    <th>Số ngày thuê:</th>
+                    <td>{{ rental.rental_days or '-' }} ngày</td>
+                  </tr>
+                </table>
+                <a href="{{ url_for('admin.rental_detail', rental_id=rental.id) }}" class="btn btn-sm btn-primary">
+                  <i class="las la-file-invoice"></i> Xem chi tiết đơn thuê
+                </a>
+                {% else %}
+                <p class="text-muted">Không có thông tin đơn thuê</p>
+                {% endif %}
+
+                {% if customer %}
+                <hr>
+                <h5>Thông tin khách hàng</h5>
+                <table class="table table-bordered">
+                  <tr>
+                    <th width="40%">Họ và tên:</th>
+                    <td><strong>{{ customer.full_name }}</strong></td>
+                  </tr>
+                  <tr>
+                    <th>Số điện thoại:</th>
+                    <td>{{ customer.phone or '-' }}</td>
+                  </tr>
+                  <tr>
+                    <th>Email:</th>
+                    <td>{{ customer.email or '-' }}</td>
+                  </tr>
+                </table>
+                <a href="{{ url_for('admin.customer_detail', customer_id=customer.id) }}" class="btn btn-sm btn-primary">
+                  <i class="las la-user"></i> Xem chi tiết khách hàng
+                </a>
+                {% endif %}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+

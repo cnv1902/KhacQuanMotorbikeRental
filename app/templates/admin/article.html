@@ -1,0 +1,399 @@
+{% extends 'admin/layout.html' %}
+
+{% block title %}Admin - Quản lý bài viết{% endblock %}
+
+{% block page_content %}
+{% if articles is not defined %}
+<div class="content-page">
+  <div class="container-fluid">
+    <div class="alert alert-danger" role="alert">
+      <strong>Debug:</strong> biến <code>articles</code> không được truyền tới template. 
+      Hãy kiểm tra view Flask và đảm bảo bạn trả về: 
+      <code>return render_template('admin/article.html', articles=articles)</code>
+    </div>
+  </div>
+</div>
+{% else %}
+<div class="content-page">
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-sm-12">
+        <div class="card">
+          <div class="card-header d-flex justify-content-between">
+            <h4 class="card-title">Danh sách bài viết</h4>
+            <button class="btn btn-primary" onclick="openArticleModal()">
+              <i class="las la-plus"></i> Thêm bài viết
+            </button>
+          </div>
+          <div class="card-body">
+            <div class="table-responsive">
+              <table class="table table-striped table-bordered mt-4">
+                <thead>
+                  <tr>
+                    <th>ID</th>
+                    <th>Tiêu đề</th>
+                    <th>Ảnh đại diện</th>
+                    <th>Trạng thái</th>
+                    <th>Lượt xem</th>
+                    <th>Ngày xuất bản</th>
+                    <th>Hành động</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for a in articles %}
+                  <tr>
+                    <td>{{ a.id }}</td>
+                    <td>{{ a.title }}</td>
+                    <td>
+                      {% if a.featured_image %}
+                        <img src="{{ a.featured_image if a.featured_image.startswith('http') else (url_for('static', filename=a.featured_image)) }}" alt="{{ a.title }}" style="height:48px; max-width: 100px; object-fit: cover;"/>
+                      {% else %}
+                        <span class="text-muted">Chưa có ảnh</span>
+                      {% endif %}
+                    </td>
+                    <td>
+                      {% if a.is_published %}
+                        <span class="badge badge-success">Đã đăng</span>
+                      {% else %}
+                        <span class="badge badge-secondary">Nháp</span>
+                      {% endif %}
+                    </td>
+                    <td>{{ a.view_count or 0 }}</td>
+                    <td>{{ a.published_at or '' }}</td>
+                    <td>
+                      <button class="btn btn-sm btn-secondary" data-article-id="{{ a.id }}" onclick="openArticleModal(parseInt(this.getAttribute('data-article-id')))">
+                        <i class="las la-edit"></i> Sửa
+                      </button>
+                      <form method="post" action="{{ url_for('admin.article_delete', a_id=a.id) }}" style="display:inline" class="confirm-delete" data-confirm-message="Xóa bài viết này?">
+                        <button type="submit" class="btn btn-sm btn-danger">
+                          <i class="las la-trash"></i> Xóa
+                        </button>
+                      </form>
+                    </td>
+                  </tr>
+                  {% else %}
+                  <tr><td colspan="7" class="text-center">Chưa có bài viết nào.</td></tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Article Modal (Enhanced Layout) -->
+<div class="modal fade" id="articleModal" tabindex="-1" role="dialog" aria-labelledby="articleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-xl" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="articleModalLabel">Thêm bài viết</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <form id="articleForm" method="post" enctype="multipart/form-data">
+        <div class="modal-body">
+          <style>
+            #articleModal .modal-body { max-height: calc(100vh - 180px); overflow-y: auto; }
+            #articleModal .note-editor.note-frame { border-radius: 6px; background: #fff; }
+            #articleModal .note-toolbar { border-bottom: 1px solid #e9ecef; }
+            .drop-inner { border: 2px dashed #6c757d; padding: 24px; text-align: center; border-radius: 8px; background: #f8f9fa; cursor: pointer; transition: .2s; }
+            .drop-inner:hover { background: #e9ecef; }
+            #featuredImagePreview img { max-height: 260px; object-fit: cover; width: 100%; }
+            .meta-box { background: #f8f9fa; padding: 16px; border-radius: 8px; margin-bottom: 16px; }
+            .meta-box h6 { font-weight: 600; font-size: 0.85rem; text-transform: uppercase; letter-spacing: .5px; margin-bottom: .75rem; color: #6c757d; }
+          </style>
+          <div class="row">
+            <div class="col-lg-8 pr-lg-2">
+              <div class="form-group mb-3">
+                <label class="font-weight-semibold">Tiêu đề <span class="text-danger">*</span></label>
+                <input class="form-control form-control-lg" name="title" id="form_title" required placeholder="Nhập tiêu đề bài viết...">
+              </div>
+              <div class="form-group mb-3">
+                <label class="font-weight-semibold">Nội dung chi tiết</label>
+                <textarea class="form-control" name="content" id="form_content" rows="12"></textarea>
+              </div>
+              <div class="meta-box d-flex flex-wrap">
+                <div class="form-group mr-3 mb-2" style="min-width:180px; flex:1 1 180px;">
+                  <label>Trạng thái</label>
+                  <select class="form-control" name="is_published" id="form_is_published">
+                    <option value="1">Đã đăng</option>
+                    <option value="0">Nháp</option>
+                  </select>
+                </div>
+                <div class="form-group mr-3 mb-2" style="min-width:180px; flex:1 1 180px;">
+                  <label>Ngày xuất bản</label>
+                  <input type="date" class="form-control" name="published_at" id="form_published_at">
+                </div>
+                <div class="form-group mb-2" style="min-width:160px; flex:1 1 160px;">
+                  <label>Lượt xem</label>
+                  <input type="number" class="form-control" name="view_count" id="form_view_count" min="0" placeholder="0">
+                </div>
+              </div>
+            </div>
+            <div class="col-lg-4 pl-lg-2 mt-4 mt-lg-0">
+              <div class="meta-box">
+                <h6>Ảnh đại diện</h6>
+                <input type="file" class="form-control-file" name="featured_image_file" id="form_featured_image_file" accept="image/*" style="position:absolute; left:-9999px;">
+                <div class="drop-inner mb-2" id="dropZoneFeatured">
+                  <i class="las la-cloud-upload-alt" style="font-size:40px; color:#6c757d;"></i>
+                  <div>
+                    <strong style="display:block; font-size:0.95rem;">Kéo thả ảnh vào đây</strong>
+                    <small class="text-muted">hoặc <button type="button" id="chooseFeaturedImageBtn" class="btn btn-sm btn-outline-secondary">Chọn file</button></small>
+                  </div>
+                </div>
+                <div class="mb-2">
+                  <small class="text-muted">Hoặc nhập URL ảnh:</small>
+                  <input type="text" class="form-control" name="featured_image" id="form_featured_image" placeholder="https://example.com/image.jpg" onchange="previewFeaturedImageUrl(this.value)">
+                </div>
+                <div id="featuredImagePreview" class="mt-2" style="display:none;">
+                  <img id="previewFeaturedImg" src="" alt="Preview" class="shadow-sm" style="border:1px solid #dee2e6; border-radius:6px;">
+                </div>
+              </div>
+              <div class="small text-muted">Gợi ý: Sử dụng ảnh rõ nét, tỷ lệ 16:9 để hiển thị đẹp trên danh sách.</div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Hủy</button>
+          <button type="submit" class="btn btn-primary">Lưu</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+<!-- end Article Modal -->
+
+<!-- Confirm Delete Modal -->
+<div class="modal fade" id="confirmDeleteModal" tabindex="-1" role="dialog" aria-labelledby="confirmDeleteModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="confirmDeleteModalLabel">Xác nhận</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Đóng">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p id="confirmDeleteMessage" class="mb-0">Bạn có chắc muốn xóa?</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" id="cancelDeleteBtn" class="btn btn-secondary" data-dismiss="modal">Hủy</button>
+        <button type="button" id="confirmDeleteBtn" class="btn btn-danger">Xóa</button>
+      </div>
+    </div>
+  </div>
+</div>
+{% endif %}
+{% endblock %}
+
+{% block scripts %}
+<!-- Summernote CSS/JS -->
+<link href="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.18/summernote-bs4.min.css" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.18/summernote-bs4.min.js"></script>
+<script>
+let currentArticleId = null;
+
+function openArticleModal(articleId = null) {
+  currentArticleId = articleId;
+  const modal = $('#articleModal');
+  const form = $('#articleForm');
+  const preview = $('#featuredImagePreview');
+  const fileInput = $('#form_featured_image_file');
+
+  form[0].reset();
+  preview.hide();
+  $('#previewFeaturedImg').attr('src', '');
+  fileInput.val('');
+
+  // Khởi tạo Summernote cho textarea content
+  setTimeout(function() {
+    $('#form_content').summernote({
+    height: 450,
+    toolbar: [
+      ['style', ['bold', 'italic', 'underline', 'clear']],
+      ['font', ['strikethrough', 'superscript', 'subscript']],
+      ['fontsize', ['fontsize']],
+      ['color', ['color']],
+      ['para', ['ul', 'ol', 'paragraph']],
+      ['height', ['height']],
+      ['insert', ['link', 'picture', 'video']],
+      ['view', ['fullscreen', 'codeview']]
+    ]
+    });
+    // Drag & drop highlight for featured image
+    const drop = document.getElementById('dropZoneFeatured');
+    if (drop) {
+      ['dragenter','dragover'].forEach(ev=>drop.addEventListener(ev, e=>{e.preventDefault(); drop.style.background='#e9ecef';}));
+      ;['dragleave','drop'].forEach(ev=>drop.addEventListener(ev, e=>{e.preventDefault(); drop.style.background='#f8f9fa';}));
+      drop.addEventListener('drop', e=>{
+        const dt = e.dataTransfer; if (!dt || !dt.files || !dt.files[0]) return;
+        $('#form_featured_image').val('');
+        const file = dt.files[0];
+        // set file to hidden input and preview
+        const input = document.getElementById('form_featured_image_file');
+        const dataTransfer = new DataTransfer();
+        dataTransfer.items.add(file);
+        input.files = dataTransfer.files;
+        previewFeaturedImage(input);
+      });
+    }
+  }, 200);
+
+  if (articleId) {
+    $('#articleModalLabel').text('Sửa bài viết');
+    form.attr('action', `/admin/article/${articleId}/edit`);
+    fetch(`/admin/article/${articleId}/edit`)
+      .then(response => response.json())
+      .then(data => {
+        if (data.success && data.article) {
+          const a = data.article;
+          $('#form_title').val(a.title);
+          $('#form_content').summernote('code', a.content || '');
+          $('#form_featured_image').val(a.featured_image);
+          $('#form_is_published').val(a.is_published ? '1' : '0');
+          $('#form_published_at').val(a.published_at);
+          $('#form_view_count').val(a.view_count);
+          if (a.featured_image) {
+            const imageUrl = a.featured_image.startsWith('http') ? a.featured_image : `/static/${a.featured_image}`;
+            $('#previewFeaturedImg').attr('src', imageUrl);
+            preview.show();
+          }
+        }
+      })
+      .catch(error => {
+        console.error('Error loading article:', error);
+        alert('Không thể tải thông tin bài viết');
+      });
+  } else {
+    $('#articleModalLabel').text('Thêm bài viết');
+    form.attr('action', '/admin/article/new');
+    $('#form_content').summernote('code', '');
+  }
+  modal.modal('show');
+}
+
+function previewFeaturedImage(inputOrFile) {
+  const preview = $('#featuredImagePreview');
+  const img = $('#previewFeaturedImg');
+  if (!inputOrFile) {
+    preview.hide();
+    img.attr('src', '');
+    return;
+  }
+  if (inputOrFile.files && inputOrFile.files[0]) {
+    const file = inputOrFile.files[0];
+    const reader = new FileReader();
+    reader.onload = function(e) {
+      img.attr('src', e.target.result);
+      preview.show();
+    };
+    reader.onerror = function() {
+      alert('Không thể đọc file ảnh');
+      preview.hide();
+    };
+    reader.readAsDataURL(file);
+    return;
+  }
+  if (inputOrFile instanceof File) {
+    const reader = new FileReader();
+    reader.onload = function(e) {
+      img.attr('src', e.target.result);
+      preview.show();
+    };
+    reader.onerror = function() {
+      alert('Không thể đọc file ảnh');
+      preview.hide();
+    };
+    reader.readAsDataURL(inputOrFile);
+    return;
+  }
+  preview.hide();
+}
+
+function previewFeaturedImageUrl(url) {
+  if (url && url.trim()) {
+  const imageUrl = url.startsWith('http') ? url : `/static/${url}`;
+  const img = $('#previewFeaturedImg');
+  img.attr('src', imageUrl);
+  img.off('error').on('error', function() {
+    $(this).attr('src', '');
+    $('#featuredImagePreview').hide();
+    alert('Không thể tải ảnh từ URL này');
+  });
+  $('#featuredImagePreview').show();
+  } else {
+  $('#featuredImagePreview').hide();
+  }
+}
+
+$(function(){
+  const fileInput = $('#form_featured_image_file');
+  const chooseBtn = $('#chooseFeaturedImageBtn');
+  chooseBtn.on('click', function(e){
+    e.stopPropagation();
+    if (fileInput && fileInput[0]) fileInput[0].click();
+  });
+  fileInput.on('change', function(){
+    if (this.files && this.files[0]) {
+      $('#form_featured_image').val('');
+      previewFeaturedImage(this);
+    }
+  });
+});
+
+$('#articleForm').off('submit').on('submit', function(e) {
+  e.preventDefault();
+  // Lấy nội dung từ Summernote
+  const content = $('#form_content').summernote('code');
+  const formData = new FormData(this);
+  formData.set('content', content);
+  const action = $(this).attr('action');
+  fetch(action, {
+    method: 'POST',
+    body: formData
+  })
+  .then(response => response.json())
+  .then(data => {
+    if (data.success) {
+      $('#articleModal').modal('hide');
+      window.location.reload();
+    } else {
+      alert(data.message || 'Có lỗi xảy ra');
+    }
+  })
+  .catch(error => {
+    console.error('Error:', error);
+    window.location.reload();
+  });
+});
+
+(function(){
+  let formToDelete = null;
+  $(document).on('submit', 'form.confirm-delete', function(e){
+  e.preventDefault();
+  formToDelete = this;
+  const msg = $(this).data('confirm-message') || 'Bạn có chắc chắn muốn thực hiện hành động này?';
+  $('#confirmDeleteMessage').text(msg);
+  $('#confirmDeleteModal').modal('show');
+  });
+  $('#confirmDeleteBtn').on('click', function(){
+  if (!formToDelete) {
+    $('#confirmDeleteModal').modal('hide');
+    return;
+  }
+  $(formToDelete).off('submit');
+  $('#confirmDeleteModal').modal('hide');
+  setTimeout(function(){
+    formToDelete.submit();
+  }, 150);
+  });
+  $('#confirmDeleteModal').on('hidden.bs.modal', function(){
+  formToDelete = null;
+  });
+})();
+</script>
+{% endblock %}

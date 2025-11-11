@@ -1,0 +1,552 @@
+/**
+ * ================================================
+ * MAIN STYLES - Khac Quan Motorbike Rental
+ * File CSS tổng hợp từ các inline styles
+ * ================================================
+ */
+
+/* ================================================
+   IMAGE LAZY LOADING STYLES
+   ================================================ */
+img:is([sizes="auto" i], [sizes^="auto," i]) {
+    contain-intrinsic-size: 3000px 1500px;
+}
+
+/* ================================================
+   WORDPRESS EMOJI STYLES
+   ================================================ */
+img.wp-smiley,
+img.emoji {
+    display: inline !important;
+    border: none !important;
+    box-shadow: none !important;
+    height: 1em !important;
+    width: 1em !important;
+    margin: 0 0.07em !important;
+    vertical-align: -0.1em !important;
+    background: none !important;
+    padding: 0 !important;
+}
+
+/* ================================================
+   CLASSIC THEME BUTTON STYLES
+   ================================================ */
+.wp-block-button__link {
+    color: #fff;
+    background-color: #32373c;
+    border-radius: 9999px;
+    box-shadow: none;
+    text-decoration: none;
+    padding: calc(.667em + 2px) calc(1.333em + 2px);
+    font-size: 1.125em;
+}
+
+.wp-block-file__button {
+    background: #32373c;
+    color: #fff;
+    text-decoration: none;
+}
+
+/* ================================================
+   BACKGROUND IMAGE LOADING
+   ================================================ */
+.bg {
+    opacity: 0;
+    transition: opacity 1s;
+    -webkit-transition: opacity 1s;
+}
+
+.bg-loaded {
+    opacity: 1;
+}
+
+/* ================================================
+   CUSTOM THEME VARIABLES
+   ================================================ */
+:root {
+    --primary-color: #dd3333;
+}
+
+/* ================================================
+   HEADER STYLES
+   ================================================ */
+.header-main {
+    height: 90px;
+}
+
+#logo img {
+    max-height: 90px;
+    padding: 10px 0;
+}
+
+#logo {
+    width: 200px;
+    display: flex;
+    justify-content: center;
+}
+
+#logo a {
+    max-width: 80px;
+}
+
+.header-top {
+    min-height: 30px;
+}
+
+.transparent .header-main {
+    height: 90px;
+}
+
+.transparent #logo img {
+    max-height: 90px;
+}
+
+.has-transparent + .page-title:first-of-type,
+.has-transparent + #main > .page-title,
+.has-transparent + #main > div > .page-title,
+.has-transparent + #main .page-header-wrapper:first-of-type .page-title {
+    padding-top: 90px;
+}
+
+.header.show-on-scroll,
+.stuck .header-main {
+    height: 70px !important;
+}
+
+.stuck #logo img {
+    max-height: 70px !important;
+}
+
+.header-bottom {
+    background-color: #f1f1f1;
+}
+
+.header-main .nav > li > a {
+    line-height: 13px;
+}
+
+/* ================================================
+   MOBILE HEADER STYLES
+   ================================================ */
+@media (max-width: 549px) {
+    .header-main {
+        height: 70px;
+    }
+
+    #logo img {
+        max-height: 70px;
+    }
+}
+
+/* ================================================
+   PRIMARY COLOR STYLES
+   ================================================ */
+.accordion-title.active,
+.has-icon-bg .icon .icon-inner,
+.logo a,
+.primary.is-underline,
+.primary.is-link,
+.badge-outline .badge-inner,
+.nav-outline > li.active > a,
+.cart-icon strong,
+[data-color='primary'],
+.is-outline.primary {
+    color: #dd3333;
+}
+
+[data-text-color="primary"] {
+    color: #dd3333 !important;
+}
+
+[data-text-bg="primary"] {
+    background-color: #dd3333;
+}
+
+/* ================================================
+   BACKGROUND COLOR STYLES
+   ================================================ */
+.scroll-to-bullets a,
+.featured-title,
+.label-new.menu-item > a:after,
+.nav-pagination > li > .current,
+.nav-pagination > li > span:hover,
+.nav-pagination > li > a:hover,
+.has-hover:hover .badge-outline .badge-inner,
+button[type="submit"],
+.button.wc-forward:not(.checkout):not(.checkout-button),
+.button.submit-button,
+.button.primary:not(.is-outline),
+.featured-table .title,
+.is-outline:hover,
+.has-icon:hover .icon-label,
+.nav-dropdown-bold .nav-column li > a:hover,
+.nav-dropdown.nav-dropdown-bold > li > a:hover,
+.nav-dropdown-bold.dark .nav-column li > a:hover,
+.nav-dropdown.nav-dropdown-bold.dark > li > a:hover,
+.header-vertical-menu__opener,
+.tagcloud a:hover,
+.grid-tools a,
+input[type='submit']:not(.is-form),
+.box-badge:hover .box-text,
+input.button.alt,
+.nav-box > li > a:hover,
+.nav-box > li.active > a,
+.nav-pills > li.active > a,
+.current-dropdown .cart-icon strong,
+.cart-icon:hover strong,
+.nav-line-bottom > li > a:before,
+.nav-line-grow > li > a:before,
+.nav-line > li > a:before,
+.banner,
+.header-top,
+.slider-nav-circle .flickity-prev-next-button:hover svg,
+.slider-nav-circle .flickity-prev-next-button:hover .arrow,
+.primary.is-outline:hover,
+.button.primary:not(.is-outline),
+input[type='submit'].primary,
+input[type='reset'].button,
+input[type='button'].primary,
+.badge-inner {
+    background-color: #dd3333;
+}
+
+/* ================================================
+   BORDER COLOR STYLES
+   ================================================ */
+.nav-vertical.nav-tabs > li.active > a,
+.scroll-to-bullets a.active,
+.nav-pagination > li > .current,
+.nav-pagination > li > span:hover,
+.nav-pagination > li > a:hover,
+.has-hover:hover .badge-outline .badge-inner,
+.accordion-title.active,
+.featured-table,
+.is-outline:hover,
+.tagcloud a:hover,
+blockquote,
+.has-border,
+.cart-icon strong:after,
+.cart-icon strong,
+.blockUI:before,
+.processing:before,
+.loading-spin,
+.slider-nav-circle .flickity-prev-next-button:hover svg,
+.slider-nav-circle .flickity-prev-next-button:hover .arrow,
+.primary.is-outline:hover {
+    border-color: #dd3333;
+}
+
+.nav-tabs > li.active > a {
+    border-top-color: #dd3333;
+}
+
+.widget_shopping_cart_content .blockUI.blockOverlay:before,
+.woocommerce-checkout-review-order .blockUI.blockOverlay:before {
+    border-left-color: #dd3333;
+}
+
+/* ================================================
+   SVG FILL STYLES
+   ================================================ */
+.slider .flickity-prev-next-button:hover svg,
+.slider .flickity-prev-next-button:hover .arrow {
+    fill: #dd3333;
+}
+
+/* ================================================
+   FOCUS STYLES
+   ================================================ */
+.primary:focus-visible,
+.submit-button:focus-visible,
+button[type="submit"]:focus-visible {
+    outline-color: #dd3333 !important;
+}
+
+/* ================================================
+   TYPOGRAPHY STYLES
+   ================================================ */
+body {
+    color: #000000;
+    font-size: 100%;
+    font-family: Roboto, sans-serif;
+    font-weight: 400;
+    font-style: normal;
+}
+
+h1, h2, h3, h4, h5, h6,
+.heading-font {
+    color: #000000;
+    font-family: Roboto, sans-serif;
+    font-weight: 700;
+    font-style: normal;
+}
+
+.nav > li > a,
+.mobile-sidebar-levels-2 .nav > li > ul > li > a {
+    font-family: Roboto, sans-serif;
+    font-weight: 700;
+    font-style: normal;
+}
+
+.off-canvas-center .nav-sidebar.nav-vertical > li > a {
+    font-family: Roboto, sans-serif;
+}
+
+.banner h1,
+.banner h2 {
+    font-weight: 700;
+    font-style: normal;
+}
+
+.alt-font {
+    font-family: Roboto, sans-serif;
+    font-weight: 400 !important;
+    font-style: normal !important;
+}
+
+/* ================================================
+   HEADER NAVIGATION COLORS
+   ================================================ */
+.header:not(.transparent) .header-nav-main.nav > li > a {
+    color: #212121;
+}
+
+.header:not(.transparent) .header-nav-main.nav > li > a:hover,
+.header:not(.transparent) .header-nav-main.nav > li.active > a,
+.header:not(.transparent) .header-nav-main.nav > li.current > a,
+.header:not(.transparent) .header-nav-main.nav > li > a.active,
+.header:not(.transparent) .header-nav-main.nav > li > a.current {
+    color: #dd3333;
+}
+
+.header-nav-main.nav-line-bottom > li > a:before,
+.header-nav-main.nav-line-grow > li > a:before,
+.header-nav-main.nav-line > li > a:before,
+.header-nav-main.nav-box > li > a:hover,
+.header-nav-main.nav-box > li.active > a,
+.header-nav-main.nav-pills > li > a:hover,
+.header-nav-main.nav-pills > li.active > a {
+    color: #FFF !important;
+    background-color: #dd3333;
+}
+
+/* ================================================
+   LINK STYLES
+   ================================================ */
+a {
+    color: #1e73be;
+}
+
+a:hover {
+    color: #dd3333;
+}
+
+.tagcloud a:hover {
+    border-color: #dd3333;
+    background-color: #dd3333;
+}
+
+/* ================================================
+   FOOTER STYLES
+   ================================================ */
+.footer-1 {
+    background-color: #bc3636;
+}
+
+.footer-2 {
+    background-color: #777777;
+}
+
+.absolute-footer,
+html {
+    background-color: #ffffff;
+}
+
+.copyright-footer {
+    color: black;
+}
+
+#block-5,
+#block-6 {
+    color: white;
+}
+
+#block-5 p {
+    margin-top: 20px;
+}
+
+#block-6 a {
+    color: white;
+}
+
+#block-6 p {
+    margin-top: 20px;
+}
+
+.footer-links {
+    font-size: 80%;
+}
+
+.footer-links li a {
+    color: #fff;
+}
+
+/* ================================================
+   NAVIGATION BORDERS
+   ================================================ */
+.nav-vertical-fly-out > li + li {
+    border-top-width: 1px;
+    border-top-style: solid;
+}
+
+/* ================================================
+   MENU LABELS
+   ================================================ */
+.label-new.menu-item > a:after {
+    content: "New";
+}
+
+.label-hot.menu-item > a:after {
+    content: "Hot";
+}
+
+.label-sale.menu-item > a:after {
+    content: "Sale";
+}
+
+.label-popular.menu-item > a:after {
+    content: "Popular";
+}
+
+/* ================================================
+   CONTACT ICONS
+   ================================================ */
+#ft-contact-icons li .icon {
+    width: 60px;
+    height: 60px;
+    border-radius: 60px;
+    background: none;
+}
+
+#ft-contact-icons li {
+    margin-bottom: 30px;
+}
+
+#ft-contact-icons.active {
+    max-height: 100px;
+    overflow: visible;
+}
+
+/* ================================================
+   SEARCH BUTTON STYLES
+   ================================================ */
+button.wp-block-search__button {
+    width: 100%;
+    height: 38px;
+    font-size: 80%;
+    color: #fff;
+}
+
+/* ================================================
+   ELEMENTOR WIDGET STYLES
+   ================================================ */
+.elementor-widget-image {
+    text-align: center;
+}
+
+.elementor-widget-image a {
+    display: inline-block;
+}
+
+.elementor-widget-image a img[src$=".svg"] {
+    width: 48px;
+}
+
+.elementor-widget-image img {
+    vertical-align: middle;
+    display: inline-block;
+}
+
+/* ================================================
+   ELEMENTOR HEADING STYLES
+   ================================================ */
+.elementor-heading-title {
+    padding: 0;
+    margin: 0;
+    line-height: 1;
+}
+
+.elementor-widget-heading .elementor-heading-title[class*=elementor-size-] > a {
+    color: inherit;
+    font-size: inherit;
+    line-height: inherit;
+}
+
+.elementor-widget-heading .elementor-heading-title.elementor-size-small {
+    font-size: 15px;
+}
+
+.elementor-widget-heading .elementor-heading-title.elementor-size-medium {
+    font-size: 19px;
+}
+
+.elementor-widget-heading .elementor-heading-title.elementor-size-large {
+    font-size: 29px;
+}
+
+.elementor-widget-heading .elementor-heading-title.elementor-size-xl {
+    font-size: 39px;
+}
+
+.elementor-widget-heading .elementor-heading-title.elementor-size-xxl {
+    font-size: 59px;
+}
+
+/* ================================================
+   ELEMENTOR TEXT EDITOR STYLES
+   ================================================ */
+.elementor-widget-text-editor.elementor-drop-cap-view-stacked .elementor-drop-cap {
+    background-color: #69727d;
+    color: #fff;
+}
+
+.elementor-widget-text-editor.elementor-drop-cap-view-framed .elementor-drop-cap {
+    color: #69727d;
+    border: 3px solid;
+    background-color: transparent;
+}
+
+.elementor-widget-text-editor:not(.elementor-drop-cap-view-default) .elementor-drop-cap {
+    margin-top: 8px;
+}
+
+.elementor-widget-text-editor:not(.elementor-drop-cap-view-default) .elementor-drop-cap-letter {
+    width: 1em;
+    height: 1em;
+}
+
+.elementor-widget-text-editor .elementor-drop-cap {
+    float: left;
+    text-align: center;
+    line-height: 1;
+    font-size: 50px;
+}
+
+.elementor-widget-text-editor .elementor-drop-cap-letter {
+    display: inline-block;
+}
+
+/* ================================================
+   GOOGLE MAPS WIDGET STYLES
+   ================================================ */
+.elementor-widget-google_maps .elementor-widget-container {
+    overflow: hidden;
+}
+
+.elementor-widget-google_maps .elementor-custom-embed {
+    line-height: 0;
+}
+
+.elementor-widget-google_maps iframe {
+    height: 300px;
+}

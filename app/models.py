@@ -88,8 +88,8 @@ class Article(Base, TimestampMixin):
         return f"<Article id={self.id} title={self.title!r}>"
 
 
-class Motorcycle(Base, TimestampMixin):
-    __tablename__ = "motorcycle"
+class Catagory_Motorcycle(Base, TimestampMixin):
+    __tablename__ = "catagory_motorcycle"
 
     id = Column(Integer, primary_key=True)
     name = Column(String(255), nullable=False)
@@ -101,26 +101,26 @@ class Motorcycle(Base, TimestampMixin):
     price_per_month = Column(Numeric(10, 2), nullable=True)
     image = Column(String(1000), nullable=True)
 
-    details = relationship("DetailMotorcycle", back_populates="motorcycle", cascade="all, delete-orphan")
+    details = relationship("Motorcycles", back_populates="category", cascade="all, delete-orphan")
 
     def __repr__(self):
-        return f"<Motorcycle id={self.id} name={self.name!r}>"
+        return f"<Catagory_Motorcycle id={self.id} name={self.name!r}>"
 
 
-class DetailMotorcycle(Base, TimestampMixin):
-    __tablename__ = "detail_motorcycle"
+class Motorcycles(Base, TimestampMixin):
+    __tablename__ = "motorcycles"
 
     id = Column(Integer, primary_key=True)
-    motorcycle_id = Column(Integer, ForeignKey("motorcycle.id", ondelete="CASCADE"), nullable=False)
+    category_id = Column(Integer, ForeignKey("catagory_motorcycle.id", ondelete="CASCADE"), nullable=False)
     license_plate = Column(String(100), nullable=False, unique=True)
     model_year = Column(Integer, nullable=True)
     description = Column(Text, nullable=True)
     status = Column(String(50), nullable=True)
 
-    motorcycle = relationship("Motorcycle", back_populates="details")
+    category = relationship("Catagory_Motorcycle", back_populates="details")
 
     def __repr__(self):
-        return f"<DetailMotorcycle id={self.id} plate={self.license_plate!r}>"
+        return f"<Motorcycles id={self.id} plate={self.license_plate!r}>"
 
 
 class Customer(Base, TimestampMixin):
@@ -154,6 +154,7 @@ class Rental(Base, TimestampMixin):
     end_date = Column(DateTime, nullable=True)
     actual_return_date = Column(DateTime, nullable=True)
     rental_days = Column(Integer, nullable=True)
+    quantity = Column(Integer, nullable=False, default=1)
     total_amount = Column(Numeric(12, 2), nullable=True, default=Decimal("0.00"))
     deposit_amount = Column(Numeric(12, 2), nullable=True, default=Decimal("0.00"))
     paid_amount = Column(Numeric(12, 2), nullable=True, default=Decimal("0.00"))
@@ -177,13 +178,10 @@ class RentalItem(Base):
 
     id = Column(Integer, primary_key=True)
     rental_id = Column(Integer, ForeignKey("rental.id", ondelete="CASCADE"), nullable=False)
-    motorcycle_id = Column(Integer, ForeignKey("detail_motorcycle.id", ondelete="SET NULL"), nullable=True)
-    quantity = Column(Integer, nullable=False, default=1)
+    motorcycle_id = Column(Integer, ForeignKey("motorcycles.id", ondelete="SET NULL"), nullable=True)
     price_per_day = Column(Numeric(12, 2), nullable=True)
-    sub_total = Column(Numeric(12, 2), nullable=True)
-
     rental = relationship("Rental", back_populates="items")
-    motorcycle = relationship("DetailMotorcycle")
+    motorcycle = relationship("Motorcycles")
 
     def __repr__(self):
         return f"<RentalItem id={self.id} rental_id={self.rental_id} motorcycle_id={self.motorcycle_id}>"
@@ -210,7 +208,7 @@ class Payment(Base):
 
 
 # helpful indexes
-Index("ix_detail_motorcycle_license", DetailMotorcycle.license_plate)
+Index("ix_motorcycles_license", Motorcycles.license_plate)
 
 
 def create_tables(url=None):
