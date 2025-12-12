@@ -6,6 +6,25 @@ from . import bp
 from ..extensions import get_db_session
 from ..models import Article
 
+
+@bp.route('/tintuc')
+def tintuc():
+    """Trang tin tức công khai"""
+    db = get_db_session()
+    try:
+        # Lấy danh sách bài viết đã publish, sắp xếp theo ngày mới nhất
+        articles = db.query(Article)\
+            .filter(Article.is_published == True)\
+            .order_by(desc(Article.published_at))\
+            .all()
+        db.close()
+        return render_template('tintuc.html', articles=articles)
+    except Exception as e:
+        db.close()
+        print(f"Error loading articles: {e}")
+        return render_template('tintuc.html', articles=[])
+
+
 @bp.route('/admin/articles')
 def articles():
     db = get_db_session()

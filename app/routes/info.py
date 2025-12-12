@@ -54,6 +54,28 @@ def convert_google_drive_link(url):
     return url
 
 
+@bp.route('/gioithieu')
+def gioithieu():
+    """Trang giới thiệu"""
+    session = get_db_session()
+    try:
+        store_info = session.query(StoreInfo).first()
+        return render_template('gioithieu.html', store_info=store_info)
+    finally:
+        session.close()
+
+
+@bp.route('/lienhe')
+def lienhe():
+    """Trang liên hệ - Load thông tin từ database"""
+    session = get_db_session()
+    try:
+        store_info = session.query(StoreInfo).first()
+        return render_template('lienhe.html', store_info=store_info)
+    finally:
+        session.close()
+
+
 @bp.route('/admin/store-info', methods=['GET', 'POST'])
 def store_info():
     session = get_db_session()
