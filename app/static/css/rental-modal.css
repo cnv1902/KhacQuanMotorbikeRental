@@ -271,12 +271,12 @@
 }
 
 .btn-submit {
-    background-color: #dd3333;
+    background-color: #ff7a00;
     color: white;
 }
 
 .btn-submit:hover {
-    background-color: #bb2222;
+    background-color: #e06600;
 }
 
 /* Motorcycle Grid Styles */
@@ -323,7 +323,7 @@
 }
 
 .motorcycle-price {
-    background: #ff0000;
+    background: #ff7a00;
     color: #ffffff;
     padding: 8px 12px;
     border-radius: 4px;
